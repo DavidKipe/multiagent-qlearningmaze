@@ -39,7 +39,7 @@ object Main {
 		val qFunction = new QFunction(lRate, dFactor)
 		val epsilonGreedy = new EpsilonGreedy(epsilon)
 
-		for (i <- 1 to n)
+		for (_ <- 1 to n)
 			Exploration.episode(qMatrix, qFunction, maze, epsilonGreedy)
 
 		mazeDir.showMaze()
