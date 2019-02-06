@@ -71,7 +71,6 @@ class QMatrix {
 			}
 		}
 
-
 		if (bestAction.isEmpty)
 			throw new NoActionFound(state, "Failed to found the best action, because such state has no action")
 		else

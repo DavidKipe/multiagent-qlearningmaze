@@ -51,11 +51,13 @@ object Analyze { // this static methods analyze the paths to printing informatio
 		for (label <- pathIterator) {
 			val q = qMatrix.getByLabel(fromLabel, label)
 			if (q == 0.0)
-				throw new NoSuchPathFound((fromLabel, label), "No Q-value found for such action in the given Q-matrix")
+				throw new NoSuchPathFound((fromLabel, label), "No Q-value found for such action in the given Q-matrix") // TODO optimize this, because is possible 0 as q value
 			qSum += q
 
 			fromLabel = label
+			print(f" -> $q%.2f")
 		}
+		println()
 
 		val nStep = path.numberOfSteps
 		println("Number of steps: " + nStep)
