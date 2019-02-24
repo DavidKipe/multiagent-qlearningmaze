@@ -8,4 +8,6 @@ trait State {
 
 	def getActions: Seq[Action]
 
+	def getLabel: String
+
 }

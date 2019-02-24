@@ -18,7 +18,7 @@ object Main {
 
 
 	def main(args: Array[String]): Unit = {
-		var c: Char = '?'
+		/*var c: Char = '?'
 		while (c != 'w' && c != 's') { // input request for reward bonus
 			print("Choose the intermediate reward bonus value [w = weak, s = strong]: ")
 			c = scala.io.StdIn.readChar()
@@ -29,7 +29,10 @@ object Main {
 		while (n < 2) { // input request for the number of episodes
 			print("Choose the number of episodes that will be performed: ")
 			n = scala.io.StdIn.readInt()
-		}
+		}*/
+
+		val n = 500
+		val rewardType = MazeGridBuilder.WEAK_REWARD
 
 		val mazeDir = Maze5x6
 
@@ -45,17 +48,20 @@ object Main {
 
 		mazeDir.showMaze()
 
-		Analyze.bestPath(mouse.qMatrix, maze)
+		//Analyze.printBestPath(mouse.qMatrix, maze)
+
+		val bestPath = mouse.getBestPathFromStartingState
+		print("Best Path: "); println(bestPath)
 
 		println("\n -- 1 -- ")
 		val path9_1 = new PathLabels(9) -> (4,5) -> (4,4) -> (4,3) -> (4,2) -> (3,2) -> (2,2) -> (2,1) -> (2,0) -> (1,0) -> (0,0)
-		Analyze.path(mouse.qMatrix, path9_1)
+		Analyze.printPathStats(mouse.qMatrix, path9_1)
 		println("\n -- 2 -- ")
 		val path9_2 = new PathLabels(9) -> (4,5) -> (4,4) -> (4,3) -> (3,3) -> (2,3) -> (1,3) -> (1,2) -> (1,1) -> (0,1) -> (0,0)
-		Analyze.path(mouse.qMatrix, path9_2)
+		Analyze.printPathStats(mouse.qMatrix, path9_2)
 		println("\n -- 3 -- ")
 		val path11 = new PathLabels(11) -> (4,5) -> (4,4) -> (4,3) -> (4,2) -> (3,2) -> (2,2) -> (2,3) -> (1,3) -> (1,2) -> (0,2) -> (0,1) -> (0,0)
-		Analyze.path(mouse.qMatrix, path11)
+		Analyze.printPathStats(mouse.qMatrix, path11)
 	}
 
 }

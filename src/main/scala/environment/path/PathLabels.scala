@@ -2,7 +2,7 @@ package environment.path
 
 import scala.collection.mutable.ArrayBuffer
 
-class PathLabels(val startingSize: Int = 0) extends Iterable[String] { // this class stores a path and provides easy methods to build a path or iterate a path
+class PathLabels(val startingSize: Int = 0) extends Iterable[String] { // this class stores a path labels and provides easy methods to build a path labels or iterate it
 
 	private var labelArray: ArrayBuffer[(Int, Int)] = _
 

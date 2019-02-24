@@ -10,11 +10,12 @@ class BasicState(val label: String, protected var actions: Seq[Action]) extends 
 	def this(label: String) = this(label, Array.empty[Action])
 
 	override private[environment] def setActions(actions: Seq[Action]): Unit = {
-		require(actions != null)
 		this.actions = actions
 	}
 
 	override def getActions: Seq[Action] = actions
+
+	override def getLabel: String = label
 
 	override def toString: String = label
 

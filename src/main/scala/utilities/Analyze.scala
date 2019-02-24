@@ -2,7 +2,7 @@ package utilities
 
 import environment.Environment
 import environment.action.Action
-import environment.path.PathLabels
+import environment.path.{Path, PathLabels}
 import environment.state.State
 import exception.NoSuchPathFound
 import learning.QMatrix
@@ -10,10 +10,28 @@ import policy.BestDeterministic
 
 object Analyze { // this static methods analyze the paths to printing information about the process
 
-	def bestPath(qMatrix: QMatrix, maze: Environment): Unit = { // given a maze it follows the best path using the best deterministic policy
+	def getBestPathFrom(qMatrix: QMatrix, maze: Environment, startingState: State): Path = {
 		val policy = new BestDeterministic()
+		val path = new Path()
 
-		var currState: State = maze.getStartingState
+		var currState: State = startingState
+
+		path -> currState
+
+		do {
+			val selected_a: Action = policy.nextAction(currState, qMatrix)
+			currState = selected_a.act.newState
+
+			path -> currState
+		} while (!maze.isGoal(currState))
+
+		path
+	}
+
+	def printBestPathStats(qMatrix: QMatrix, maze: Environment): Unit = { // given a maze it follows the best path using the best deterministic policy
+		val bestPathIterator = getBestPathFrom(qMatrix, maze, maze.getStartingState).iterator
+
+		var currState: State = bestPathIterator.next()
 		var oldState: State = currState
 
 		var nStep = 0
@@ -23,10 +41,8 @@ object Analyze { // this static methods analyze the paths to printing informatio
 		do {
 			print(currState + " -> ")
 
-			val selected_a: Action = policy.nextAction(currState, qMatrix)
-
 			oldState = currState
-			currState = selected_a.act.newState
+			currState = bestPathIterator.next()
 
 			qSum += qMatrix.get(oldState, currState)
 
@@ -40,7 +56,7 @@ object Analyze { // this static methods analyze the paths to printing informatio
 		println("Average of reward bonus: " + (qSum / nStep))
 	}
 
-	def path(qMatrix: QMatrix, path: PathLabels): Unit = { // simply follows the path given on the q-matrix (no maze is )
+	def printPathStats(qMatrix: QMatrix, path: PathLabels): Unit = { // simply follows the path given on the q-matrix (no maze is )
 		var qSum = 0.0
 
 		println("Path: " + path)
