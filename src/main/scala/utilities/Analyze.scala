@@ -44,7 +44,11 @@ object Analyze { // this static methods analyze the paths to printing informatio
 			oldState = currState
 			currState = bestPathIterator.next()
 
-			qSum += qMatrix.get(oldState, currState)
+			val opt_q = qMatrix.get(oldState, currState)
+			if (opt_q.isEmpty)
+				throw new NoSuchPathFound((oldState.getLabel, currState.getLabel), "No Q-value found for such action in the given Q-matrix")
+
+			qSum += opt_q.get
 
 			nStep += 1
 		} while (!maze.isGoal(currState))
@@ -65,9 +69,11 @@ object Analyze { // this static methods analyze the paths to printing informatio
 		var fromLabel = pathIterator.next()
 
 		for (label <- pathIterator) {
-			val q = qMatrix.getByLabel(fromLabel, label)
-			if (q == 0.0)
-				throw new NoSuchPathFound((fromLabel, label), "No Q-value found for such action in the given Q-matrix") // TODO optimize this, because is possible 0 as q value
+			val opt_q = qMatrix.getByLabel(fromLabel, label)
+			if (opt_q.isEmpty)
+				throw new NoSuchPathFound((fromLabel, label), "No Q-value found for such action in the given Q-matrix")
+
+			val q = opt_q.get
 			qSum += q
 
 			fromLabel = label

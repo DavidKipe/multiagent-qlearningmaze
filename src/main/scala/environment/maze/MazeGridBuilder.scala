@@ -101,7 +101,7 @@ class MazeGridBuilder(val x: Int, val y: Int, val rewardBonus: Int = MazeGridBui
 
 	override def build(): Environment = {
 		for (i <- 0 until x; j <- 0 until y) { // setting all actions into the states
-			grid(i)(j).setActions(actionGrid(i)(j).toList)
+			grid(i)(j).setActions(actionGrid(i)(j))
 		}
 
 		new Maze(grid, startingState, goalState)

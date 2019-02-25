@@ -6,7 +6,7 @@ import environment.state.{BasicState, State}
 import exception.NoActionFound
 
 import scala.collection.mutable
-import scala.collection.mutable.ListBuffer
+import scala.collection.mutable.ArrayBuffer
 
 class QMatrix {
 
@@ -14,7 +14,11 @@ class QMatrix {
 		This class implements the q-matrix structure. It provides methods to put and get values from the matrix and other methods on the actions
 	 */
 
+	val defaultValue = .0 // it there is no value yet, the initial value is 0
+
+
 	private val qValues = mutable.Map[(State, State), Double]() // this is the real q-matrix, it is a map from a pair of State (fromState, toState) to a real number
+
 
 	def put(state: State, newState: State, q: Double): Unit = qValues += (state, newState) -> q
 
@@ -22,19 +26,26 @@ class QMatrix {
 
 	def put(state: State, action: Action, q: Double): Unit = put(state, action.act, q)
 
-	def get(state: State, newState: State): Double = qValues.getOrElse((state, newState), .0)
+	def get(state: State, newState: State): Option[Double] = qValues.get(state, newState)
 
-	def get(state: State, transition: Transition): Double = get(state, transition.newState)
+	def getOrDefault(state: State, newState: State): Double = qValues.getOrElse((state, newState), defaultValue)
 
-	def get(state: State, action: Action): Double = get(state, action.act)
+	def get(state: State, transition: Transition): Option[Double] = get(state, transition.newState)
 
-	def getByLabel(fromLabel: String, toLabel: String): Double = get(new BasicState(fromLabel), new BasicState(toLabel))
+	def getOrDefault(state: State, transition: Transition): Double = getOrDefault(state, transition.newState)
+
+	def get(state: State, action: Action): Option[Double] = get(state, action.act)
+
+	def getOrDefault(state: State, action: Action): Double = getOrDefault(state, action.act)
+
+	def getByLabel(fromLabel: String, toLabel: String): Option[Double] = get(new BasicState(fromLabel), new BasicState(toLabel))
+
 
 	def getMax(state: State): Double = { // return the highest value for an Action given a State
 		var max_q = Double.NegativeInfinity
 
 		for (a <- state.getActions) {
-			val q = get(state, a)
+			val q = getOrDefault(state, a)
 			if (q > max_q)
 				max_q = q
 		}
@@ -43,11 +54,11 @@ class QMatrix {
 	}
 
 	def bestActions(state: State): Seq[Action] = { // returns the best actions for a State
-		val bestActions = ListBuffer[Action]()
+		val bestActions = ArrayBuffer[Action]()
 		var max_q = Double.NegativeInfinity
 
 		for (a <- state.getActions) {
-			val q = get(state, a)
+			val q = getOrDefault(state, a)
 			if (q == max_q) bestActions += a
 			if (q > max_q) {
 				bestActions.clear()
@@ -64,7 +75,7 @@ class QMatrix {
 		var max_q = Double.NegativeInfinity
 
 		for (a <- state.getActions) {
-			val q = get(state, a)
+			val q = getOrDefault(state, a)
 			if (q > max_q) {
 				bestAction = Some(a)
 				max_q = q
@@ -72,7 +83,7 @@ class QMatrix {
 		}
 
 		if (bestAction.isEmpty)
-			throw new NoActionFound(state, "Failed to found the best action, because such state has no action")
+			throw new NoActionFound(state, "Failed to found the best action, because such state has no actions")
 		else
 			bestAction.get
 	}

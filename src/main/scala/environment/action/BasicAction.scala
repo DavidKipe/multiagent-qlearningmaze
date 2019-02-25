@@ -9,7 +9,7 @@ class BasicAction(val label: String, protected val toState: State, protected var
 	require(toState != null, "An Action require a target State")
 
 	def this(label: String, toState: State) = this(label, toState, 0)
-
+	// TODO add method to create automatically the label "-> <toState>"
 
 	override private[environment] def setReward(reward: Int): Unit = this.reward = reward
 

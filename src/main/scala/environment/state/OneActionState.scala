@@ -18,7 +18,7 @@ class OneActionState(val label: String, protected var optAction: Option[Action])
 
 	def getAction: Option[Action] = optAction
 
-	override def getActions: Seq[Action] = optAction match { case None => Array.empty[Action]; case Some(action) => List(action) }
+	override def getActions: Seq[Action] = optAction match { case None => Array.empty[Action]; case Some(action) => Seq(action) }
 
 	override def getLabel: String = label
 

@@ -15,8 +15,7 @@ class SingleAgent(protected val maze: Environment, protected var qFunction: QFun
 	def episodesRun: Int = _episodesRun
 
 	override def runEpisode(eGreedyPolicy: EpsilonGreedy): Unit = {
-		Exploration.episode(qMatrix, qFunction, maze, eGreedyPolicy)
-		_episodesRun += 1
+		runEpisodes(eGreedyPolicy, 1)
 	}
 
 	override def runEpisodes(eGreedyPolicy: EpsilonGreedy, numberOfIterations: Int): Unit = {
