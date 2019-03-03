@@ -5,7 +5,7 @@ import environment.state.State
 
 import scala.util.Random
 
-class Maze private[maze](protected val grid: Array[Array[State]], protected val startingState: State, protected val goalState: State) extends Environment {
+class Maze (protected val grid: Array[Array[State]], protected val startingState: State, protected val goalState: State) extends Environment {
 
 	val x: Int = grid.length
 	val y: Int = grid(0).length
@@ -14,6 +14,8 @@ class Maze private[maze](protected val grid: Array[Array[State]], protected val 
 
 
 	override def gridSize: (Int, Int) = (x, y)
+
+	override def getGrid: Array[Array[State]] = grid
 
 	override def isGoal(state: State): Boolean = state equals goalState
 
@@ -25,4 +27,15 @@ class Maze private[maze](protected val grid: Array[Array[State]], protected val 
 		grid(i)(j)
 	}
 
+	override def toString: String = {
+		val strBld: StringBuilder = new StringBuilder
+
+		for (row <- grid) {
+			for (state <- row)
+				strBld.append(state.getLabel).append(" ")
+			strBld.append("\n")
+		}
+
+		strBld.toString
+	}
 }

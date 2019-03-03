@@ -15,8 +15,8 @@ class MazeGridBuilder(val x: Int, val y: Int, val rewardBonus: Int = MazeGridBui
 	val positiveReward: Int = rewardBonus
 	val negativeReward: Int = -2 * positiveReward
 
-	protected val actionCache: Array[Array[Option[Action]]] = Array.ofDim[Option[Action]](x, y) // cache for re-using the actions // in position (i,j) there is the Action to go to State (i,j)
-	protected val actionGrid: Array[Array[ArrayBuffer[Action]]] = Array.ofDim[ArrayBuffer[Action]](x, y) // store all the actions in the right grid position
+	protected val actionCache: Array[Array[Option[Action]]] = Array.fill(x,y)(None) // cache for re-using the actions // in position (i,j) there is the Action to go to State (i,j) [initialized with None]
+	protected val actionGrid: Array[Array[ArrayBuffer[Action]]] = Array.fill(x,y)(new ArrayBuffer[Action](4)) // store all the actions in the right grid position [initialized with the starting size (max four actions per state)]
 
 	protected var startingState: State = _
 	protected var goalState: State = _
@@ -43,14 +43,6 @@ class MazeGridBuilder(val x: Int, val y: Int, val rewardBonus: Int = MazeGridBui
 
 	for (i <- 0 until x; j <- 0 until y) { // create all the (empty) states in the grid
 		grid(i)(j) = new BasicState("(" + i + "," + j + ")")
-	}
-
-	for (i <- 0 until x; j <- 0 until y) { // initialize the cache of the actions
-		actionCache(i)(j) = None
-	}
-
-	for (i <- 0 until x; j <- 0 until y) { // initialize all the action lists in the grid
-		actionGrid(i)(j) = new ArrayBuffer[Action](4) // with an ArrayBuffer set with the starting size (max four actions per state)
 	}
 
 	for (i <- 0 until x; j <- 0 until y) { // create all links (transitions) in the grid

@@ -1,8 +1,9 @@
 import agent.SingleAgent
 import environment.maze.MazeGridBuilder
 import environment.path.PathLabels
-import examples.maze.Maze5x6
+import examples.maze.{Maze5x6, Simple4x4}
 import learning.QFunction
+import mas.InitializationMASystem
 import policy.EpsilonGreedy
 import utilities.Analyze
 
@@ -31,14 +32,14 @@ object Main {
 			n = scala.io.StdIn.readInt()
 		}*/
 
-		val n = 500
+		val n = 1000
 		val rewardType = MazeGridBuilder.WEAK_REWARD
 
 		val mazeDir = Maze5x6
 
 		val maze = mazeDir.construct(rewardType) // create the example maze
 
-		// initialize q-matrix, q-function and the exploration policy
+		// initialize q-function and the exploration policy
 		val qFunction = new QFunction(lRate, dFactor)
 		val epsilonGreedy = new EpsilonGreedy(epsilon)
 
@@ -47,6 +48,10 @@ object Main {
 		mouse.runEpisodes(epsilonGreedy, n)
 
 		mazeDir.showMaze()
+
+		val maze4x4 = Simple4x4.construct(rewardType)
+		println(maze4x4)
+		val pieces = InitializationMASystem.splitEnvironment(maze4x4,2,2)
 
 		//Analyze.printBestPath(mouse.qMatrix, maze)
 

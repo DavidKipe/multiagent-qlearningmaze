@@ -4,7 +4,9 @@ import environment.state.State
 
 trait Environment {
 
-	def gridSize: (Int, Int)
+	def gridSize: (Int, Int) // returns (height, width)
+
+	def getGrid: Array[Array[State]]
 
 	def isGoal(state: State): Boolean
 
