@@ -6,6 +6,6 @@ trait EnvironmentPiece extends Environment {
 
 	def setStartingState(state: State): Unit
 
-
+	def isStartingStateValid: Boolean
 
 }
