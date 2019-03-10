@@ -1,8 +1,8 @@
 package mas
 
-import environment.Environment
-import environment.maze.{Maze, MazePiece}
+import environment.maze.MazePiece
 import environment.state.State
+import environment.{Environment, EnvironmentPiece}
 
 import scala.collection.mutable
 
@@ -14,7 +14,7 @@ object InitializationMASystem {
 		- the assumption is that start stat is on the down right state, and the goal state is on the top left state,
 		according to that the goal states of each piece are set
 	 */
-	def splitEnvironment(environment: Environment, numberOfHorizontalPieces: Int, numberOfVerticalPieces: Int): Array[Array[Environment]] = {
+	def splitEnvironment(environment: Environment, numberOfHorizontalPieces: Int, numberOfVerticalPieces: Int): Array[Array[EnvironmentPiece]] = {
 		val envGrid = environment.getGrid // get the grid of states
 		val (envHeight, envWidth): (Int, Int) = environment.gridSize // get the grid size
 
@@ -24,7 +24,7 @@ object InitializationMASystem {
 		val pieceWidth: Int = envWidth / numberOfHorizontalPieces // width of a single piece
 		val pieceHeight: Int = envHeight / numberOfVerticalPieces // height of a single piece
 
-		val matrixOfEnvPieces: Array[Array[Environment]] = Array.ofDim(numberOfVerticalPieces, numberOfHorizontalPieces) // init output matrix of environment pieces
+		val matrixOfEnvPieces: Array[Array[EnvironmentPiece]] = Array.ofDim(numberOfVerticalPieces, numberOfHorizontalPieces) // init output matrix of environment pieces
 
 		val horizontalPieces = envGrid.sliding(pieceHeight, pieceHeight) // split the grid horizontally in 'numberOfVerticalPieces' parts
 
@@ -45,7 +45,6 @@ object InitializationMASystem {
 				val newEnvGrid: Array[Array[State]] = Array.ofDim(pieceHeight, pieceWidth) // init the new grid
 				for (j <- 0 until pieceHeight) // collect all the horizontal array parts (i -> i-th grid piece; j -> j-th horizontal array)
 					newEnvGrid(j) = tmpSplitting(j)(i)
-				println(new Maze(newEnvGrid, null, null))
 
 				val goalStates: Set[State] = createGoalStatesSet(newEnvGrid, currHStripeInd, i)
 				matrixOfEnvPieces(currHStripeInd)(i) = new MazePiece(newEnvGrid, goalStates) // create and set the new piece of maze
