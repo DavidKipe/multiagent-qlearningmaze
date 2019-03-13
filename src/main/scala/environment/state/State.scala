@@ -10,4 +10,6 @@ trait State {
 
 	def getLabel: String
 
+	def getCoord: (Int, Int)
+
 }

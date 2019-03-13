@@ -42,7 +42,7 @@ class MazeGridBuilder(val x: Int, val y: Int, val rewardBonus: Int = MazeGridBui
 	}
 
 	for (i <- 0 until x; j <- 0 until y) { // create all the (empty) states in the grid
-		grid(i)(j) = new BasicState("(" + i + "," + j + ")")
+		grid(i)(j) = new BasicState(i, j)
 	}
 
 	for (i <- 0 until x; j <- 0 until y) { // create all links (transitions) in the grid

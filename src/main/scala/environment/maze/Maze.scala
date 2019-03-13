@@ -8,7 +8,7 @@ import scala.util.Random
 class Maze (protected val grid: Array[Array[State]], protected val startingState: State, protected val goalState: State) extends Environment {
 
 	val x: Int = grid.length
-	val y: Int = grid(0).length
+	val y: Int = if (x == 0) 0 else grid(0).length
 
 	private val random = new Random()
 

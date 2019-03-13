@@ -3,19 +3,24 @@ package environment.state
 import environment.action.Action
 
 
-class BasicState(val label: String, protected var actions: Seq[Action]) extends State { // the only type of state in this project (the label [String] is the identifier of a BasicState)
+class BasicState(val coordY: Int, val coordX: Int, protected var actions: Seq[Action]) extends State { // the only type of state in this project (the label [String] is the identifier of a BasicState)
 
-	require(label != null && label.nonEmpty, "The label of a State can not be null or empty")
+	protected var label: String = "(" + coordY + "," + coordX + ")"
 
-	def this(label: String) = this(label, Array.empty[Action])
+	def this(coordY: Int, coordX: Int) = this(coordY, coordX, Array.empty[Action])
 
-	override private[environment] def setActions(actions: Seq[Action]): Unit = {
-		this.actions = actions
+	def this(label: String) = {
+		this(-1, -1)
+		this.label = label
 	}
+
+	override private[environment] def setActions(actions: Seq[Action]): Unit = this.actions = actions
 
 	override def getActions: Seq[Action] = actions
 
 	override def getLabel: String = label
+
+	override def getCoord: (Int, Int) = (coordY, coordY)
 
 	override def toString: String = label
 

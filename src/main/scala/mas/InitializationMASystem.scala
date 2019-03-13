@@ -48,6 +48,7 @@ object InitializationMASystem {
 
 				val goalStates: Set[State] = createGoalStatesSet(newEnvGrid, currHStripeInd, i)
 				matrixOfEnvPieces(currHStripeInd)(i) = new MazePiece(newEnvGrid, goalStates) // create and set the new piece of maze
+				// TODO need to delete all the transitions in the right and down edges towards the outside of this env piece
 
 				if (currHStripeInd == numberOfVerticalPieces-1 && i == numberOfHorizontalPieces-1) { // set the orig starting state in this piece
 					val startingMazePiece = matrixOfEnvPieces(currHStripeInd)(i).asInstanceOf[MazePiece]

@@ -4,6 +4,6 @@ trait AgentNeighborhood {
 
 	def getNeighborhoodAgents: Set[MASAgent]
 
-	def setNeighborhoodAgents: Set[MASAgent]
+	def setNeighborhoodAgents(neighbors: Set[MASAgent]): Unit
 
 }

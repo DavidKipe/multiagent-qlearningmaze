@@ -5,7 +5,7 @@ import environment.state.State
 import learning.QFunction
 import policy.EpsilonGreedy
 
-class MASAgent(maze: EnvironmentPiece, qFunction: QFunction, neighboringStates: Set[MASAgent]) extends SingleAgent(maze, qFunction) with AgentCommunication with AgentNeighborhood {
+class MASAgent(maze: EnvironmentPiece, qFunction: QFunction, private var neighboringAgents: Set[MASAgent]) extends SingleAgent(maze, qFunction) with AgentCommunication with AgentNeighborhood {
 
 	override def runEpisode(eGreedyPolicy: EpsilonGreedy): Unit = {
 		super.runEpisode(eGreedyPolicy)
@@ -23,15 +23,15 @@ class MASAgent(maze: EnvironmentPiece, qFunction: QFunction, neighboringStates: 
 
 	override def putQValueAt(state: State, value: Double): Unit = { // TODO must be an async method
 		/* TODO
-		*  check if state is a valid state for me, otherwise discard
+		*  check if state is a valid state for me, otherwise discard (could be simply checking if the state is not part of my environment piece)
 		*  get all my states that can reach the given state (must be 2 or 3)
 		*  for each state put into the qMatrix the given value for the transition
 		* */
 	}
 
-	override def getNeighborhoodAgents: Set[MASAgent] = ???
+	override def getNeighborhoodAgents: Set[MASAgent] = neighboringAgents
 
-	override def setNeighborhoodAgents: Set[MASAgent] = ???
+	override def setNeighborhoodAgents(neighbors: Set[MASAgent]): Unit = neighboringAgents = neighbors
 
 
 	// the edging state must be the goal states, but the action for going to the neighbor must be present for the algorithm formula

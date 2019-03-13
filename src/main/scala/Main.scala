@@ -3,7 +3,7 @@ import environment.maze.MazeGridBuilder
 import environment.path.PathLabels
 import examples.maze.{Maze5x6, Simple4x4}
 import learning.QFunction
-import mas.InitializationMASystem
+import mas.{InitializationMASystem, LearningMazeMAS}
 import policy.EpsilonGreedy
 import utilities.Analyze
 
@@ -49,9 +49,12 @@ object Main {
 
 		mazeDir.showMaze()
 
+		/* MAS part test */
 		val maze4x4 = Simple4x4.construct(rewardType)
 		println(maze4x4)
 		val pieces = InitializationMASystem.splitEnvironment(maze4x4,2,2)
+		val agents = new LearningMazeMAS(pieces, qFunction)
+		/*  */
 
 		//Analyze.printBestPath(mouse.qMatrix, maze)
 
