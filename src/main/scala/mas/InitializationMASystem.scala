@@ -4,8 +4,6 @@ import environment.maze.MazePiece
 import environment.state.State
 import environment.{Environment, EnvironmentPiece}
 
-import scala.collection.mutable
-
 object InitializationMASystem {
 
 	/*
@@ -46,9 +44,8 @@ object InitializationMASystem {
 				for (j <- 0 until pieceHeight) // collect all the horizontal array parts (i -> i-th grid piece; j -> j-th horizontal array)
 					newEnvGrid(j) = tmpSplitting(j)(i)
 
-				val goalStates: Set[State] = createGoalStatesSet(newEnvGrid, currHStripeInd, i)
-				matrixOfEnvPieces(currHStripeInd)(i) = new MazePiece(newEnvGrid, goalStates) // create and set the new piece of maze
-				// TODO need to delete all the transitions in the right and down edges towards the outside of this env piece
+				//val goalStates: Set[State] = createGoalStatesSet(newEnvGrid, currHStripeInd, i)
+				matrixOfEnvPieces(currHStripeInd)(i) = new MazePiece(newEnvGrid, currHStripeInd, i) // create and set the new piece of maze
 
 				if (currHStripeInd == numberOfVerticalPieces-1 && i == numberOfHorizontalPieces-1) { // set the orig starting state in this piece
 					val startingMazePiece = matrixOfEnvPieces(currHStripeInd)(i).asInstanceOf[MazePiece]
@@ -63,7 +60,7 @@ object InitializationMASystem {
 		matrixOfEnvPieces
 	}
 
-	private def createGoalStatesSet(grid: Array[Array[State]], posY: Int, posX: Int): Set[State] = { // calculation of goalStates
+	/*private def createGoalStatesSet(grid: Array[Array[State]], posY: Int, posX: Int): Set[State] = { // calculation of goalStates
 		if (posX == 0 && posY == 0) // for the ending piece it is the original goal state
 			return Set[State](grid(0)(0))
 
@@ -82,7 +79,7 @@ object InitializationMASystem {
 					goalStatesSet += currHorizArray(0)
 
 		Set.empty[State] ++ goalStatesSet
-	}
+	}*/
 
 }
 

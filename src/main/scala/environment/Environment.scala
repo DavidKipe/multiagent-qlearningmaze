@@ -14,4 +14,8 @@ trait Environment {
 
 	def getRandomState: State
 
+	def countNewEpisode(): Unit
+
+	def getEpisodesRun: Int
+
 }

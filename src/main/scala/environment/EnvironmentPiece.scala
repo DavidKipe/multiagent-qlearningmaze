@@ -8,4 +8,8 @@ trait EnvironmentPiece extends Environment {
 
 	def isStartingStateValid: Boolean
 
+	def getPieceAngleAbsCoords: ((Int, Int), (Int, Int))
+
+	def getPieceCoords: (Int, Int)
+
 }

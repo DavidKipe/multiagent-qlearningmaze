@@ -54,6 +54,13 @@ object Main {
 		println(maze4x4)
 		val pieces = InitializationMASystem.splitEnvironment(maze4x4,2,2)
 		val agents = new LearningMazeMAS(pieces, qFunction)
+		/*
+		 TODO
+		 - create a new "bestAction" in qMatrix class whose take also the boundaries of the environment piece, therefore excludes the states outside the environment boundaries
+		 - a solution to find the best path (the goal state should be all the edges but the edge in which the path entered in the env piece)
+		 - run all agents in parallel
+		 */
+
 		/*  */
 
 		//Analyze.printBestPath(mouse.qMatrix, maze)
