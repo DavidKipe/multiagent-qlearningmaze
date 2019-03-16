@@ -29,7 +29,7 @@ class Maze (protected val grid: Array[Array[State]], protected val startingState
 
 	override def countNewEpisode(): Unit = Unit // not used in this implementation
 
-	override def getEpisodesRun: Int = ???
+	override def numberOfEpisodesRun: Int = ???
 
 	override def toString: String = {
 		val strBld: StringBuilder = new StringBuilder

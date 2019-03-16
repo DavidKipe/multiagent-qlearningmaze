@@ -2,6 +2,8 @@ package environment.state
 
 import environment.action.Action
 
+import scala.collection.mutable.ArrayBuffer
+
 
 class BasicState(val coordY: Int, val coordX: Int, protected var actions: Seq[Action]) extends State { // the only type of state in this project (the label [String] is the identifier of a BasicState)
 
@@ -17,6 +19,19 @@ class BasicState(val coordY: Int, val coordX: Int, protected var actions: Seq[Ac
 	override private[environment] def setActions(actions: Seq[Action]): Unit = this.actions = actions
 
 	override def getActions: Seq[Action] = actions
+
+	override def getActions(anglesBoundaries: ((Int, Int), (Int, Int))): Seq[Action] = {
+		val ((firstY, firstX), (lastY, lastX)) = anglesBoundaries
+		val resActions = ArrayBuffer[Action]()
+
+		for (action <- actions) {
+			val (y, x) = action.act.newState.getCoord
+			if (y >= firstY && y <= lastY && x >= firstX && x <= lastX)
+				resActions.append(action)
+		}
+
+		resActions
+	}
 
 	override def getLabel: String = label
 

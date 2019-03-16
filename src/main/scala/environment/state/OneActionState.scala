@@ -2,6 +2,7 @@ package environment.state
 import environment.action.Action
 
 class OneActionState(val coordY: Int, val coordX: Int, protected var optAction: Option[Action]) extends State {
+	// TODO should extend BasicState
 
 	protected var label: String = "(" + coordY + "," + coordX + ")"
 
@@ -22,6 +23,8 @@ class OneActionState(val coordY: Int, val coordX: Int, protected var optAction: 
 	def getAction: Option[Action] = optAction
 
 	override def getActions: Seq[Action] = optAction match { case None => Array.empty[Action]; case Some(action) => Seq(action) }
+
+	override def getActions(anglesBoundaries: ((Int, Int), (Int, Int))): Seq[Action] = ???
 
 	override def getLabel: String = label
 

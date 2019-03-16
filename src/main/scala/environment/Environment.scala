@@ -16,6 +16,6 @@ trait Environment {
 
 	def countNewEpisode(): Unit
 
-	def getEpisodesRun: Int
+	def numberOfEpisodesRun: Int
 
 }

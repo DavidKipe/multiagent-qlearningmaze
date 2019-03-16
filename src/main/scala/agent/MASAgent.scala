@@ -8,17 +8,21 @@ import policy.EpsilonGreedy
 class MASAgent(maze: EnvironmentPiece, qFunction: QFunction, private var neighboringAgents: Set[MASAgent]) extends SingleAgent(maze, qFunction) with AgentCommunication with AgentNeighborhood {
 
 	override def runEpisode(eGreedyPolicy: EpsilonGreedy): Unit = {
+		_runEpisode(eGreedyPolicy)
+	}
+
+	override def runEpisodes(eGreedyPolicy: EpsilonGreedy, numberOfIterations: Int): Unit = {
+		for (_ <- 1 to numberOfIterations)
+			_runEpisode(eGreedyPolicy)
+	}
+
+	private def _runEpisode(eGreedyPolicy: EpsilonGreedy): Unit = {
 		super.runEpisode(eGreedyPolicy)
 		/* TODO
 		*  get the max of the action values for each state in the edge
 		*  send new values to the neighborhood
 		*  in async way
 		* */
-	}
-
-	override def runEpisodes(eGreedyPolicy: EpsilonGreedy, numberOfIterations: Int): Unit = {
-		for (_ <- 1 to numberOfIterations)
-			runEpisode(eGreedyPolicy)
 	}
 
 	override def putQValueAt(state: State, value: Double): Unit = { // TODO must be an async method

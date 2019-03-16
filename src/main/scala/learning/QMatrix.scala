@@ -88,4 +88,40 @@ class QMatrix {
 			bestAction.get
 	}
 
+	/* Overloading these functions for MAS implementation  */
+	def bestActions(state: State, anglesBoundaries: ((Int, Int), (Int, Int))): Seq[Action] = { // returns the best actions for a State
+		val bestActions = ArrayBuffer[Action]()
+		var max_q = Double.NegativeInfinity
+
+		for (a <- state.getActions(anglesBoundaries)) {
+			val q = getOrDefault(state, a)
+			if (q == max_q) bestActions += a
+			if (q > max_q) {
+				bestActions.clear()
+				bestActions += a
+				max_q = q
+			}
+		}
+
+		bestActions
+	}
+
+	def bestAction(state: State, anglesBoundaries: ((Int, Int), (Int, Int))): Action = { // returns only the first best action found for a State
+		var bestAction: Option[Action] = None
+		var max_q = Double.NegativeInfinity
+
+		for (a <- state.getActions(anglesBoundaries)) {
+			val q = getOrDefault(state, a)
+			if (q > max_q) {
+				bestAction = Some(a)
+				max_q = q
+			}
+		}
+
+		if (bestAction.isEmpty)
+			throw new NoActionFound(state, "Failed to found the best action, because such state has no actions")
+		else
+			bestAction.get
+	}
+
 }

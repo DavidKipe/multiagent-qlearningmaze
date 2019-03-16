@@ -9,7 +9,7 @@ class LearningMazeMAS(val environmentPieces: Array[Array[EnvironmentPiece]], val
 	val gridVertHeight: Int = environmentPieces.length
 	val gridHorizWidth: Int = if (gridVertHeight == 0) 0 else environmentPieces(0).length
 
-	protected val gridOfAgents: Array[Array[MASAgent]] = Array.ofDim(gridVertHeight, gridHorizWidth)
+	val gridOfAgents: Array[Array[MASAgent]] = Array.ofDim(gridVertHeight, gridHorizWidth) // TODO to hide in final version
 
 	for (posY <- 0 until gridVertHeight) // create and initialize all the agents on the grid
 		for (posX <- 0 until gridHorizWidth)

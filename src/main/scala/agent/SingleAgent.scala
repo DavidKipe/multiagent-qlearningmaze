@@ -10,20 +10,19 @@ import utilities.{Analyze, Exploration}
 class SingleAgent(protected val maze: Environment, protected var qFunction: QFunction) extends Agent {
 
 	val qMatrix: QMatrix = new QMatrix()
-	protected var _episodesRun: Int = 0
-
-	def episodesRun: Int = _episodesRun
 
 	override def runEpisode(eGreedyPolicy: EpsilonGreedy): Unit = {
-		runEpisodes(eGreedyPolicy, 1)
+		_runEpisode(eGreedyPolicy)
 	}
 
 	override def runEpisodes(eGreedyPolicy: EpsilonGreedy, numberOfIterations: Int): Unit = {
-		for (_ <- 1 to numberOfIterations) {
-			Exploration.episode(qMatrix, qFunction, maze, eGreedyPolicy)
-			maze.countNewEpisode() // tell the environment that one more episode has been run on it
-			_episodesRun += 1
-		}
+		for (_ <- 1 to numberOfIterations)
+			_runEpisode(eGreedyPolicy)
+	}
+
+	private def _runEpisode(eGreedyPolicy: EpsilonGreedy): Unit = {
+		Exploration.episode(qMatrix, qFunction, maze, eGreedyPolicy)
+		maze.countNewEpisode() // tell the environment that one more episode has been run on it
 	}
 
 	override def getBestPathFrom(startingState: State): Path = {

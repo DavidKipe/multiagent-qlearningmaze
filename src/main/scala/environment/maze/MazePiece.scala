@@ -13,7 +13,7 @@ class MazePiece(grid: Array[Array[State]], val coordY: Int, val coordX: Int) ext
 
 	protected val nOfGoalSets: Int = goalStatesSets.length
 
-	protected var numberOfEpisodesRun: Int = 0
+	protected var _numberOfEpisodesRun: Int = 0
 
 	private var mostValuableStartingState: State = _
 
@@ -73,13 +73,13 @@ class MazePiece(grid: Array[Array[State]], val coordY: Int, val coordX: Int) ext
 
 	override def getStartingState: State = mostValuableStartingState
 
-	override def isGoal(state: State): Boolean = goalStatesSets(numberOfEpisodesRun % goalStatesSets.length) contains state
+	override def isGoal(state: State): Boolean = goalStatesSets(_numberOfEpisodesRun % goalStatesSets.length) contains state
 
 	override def getPieceAngleAbsCoords: ((Int, Int), (Int, Int)) = (grid(0)(0).getCoord, grid(y-1)(x-1).getCoord)
 
 	override def getPieceCoords: (Int, Int) = (coordY, coordX)
 
-	override def countNewEpisode(): Unit = numberOfEpisodesRun += 1
+	override def countNewEpisode(): Unit = _numberOfEpisodesRun += 1
 
-	override def getEpisodesRun: Int = numberOfEpisodesRun
+	override def numberOfEpisodesRun: Int = _numberOfEpisodesRun
 }

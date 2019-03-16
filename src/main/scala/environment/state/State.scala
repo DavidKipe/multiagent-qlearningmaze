@@ -8,6 +8,8 @@ trait State {
 
 	def getActions: Seq[Action]
 
+	def getActions(anglesBoundaries: ((Int, Int), (Int, Int))): Seq[Action]
+
 	def getLabel: String
 
 	def getCoord: (Int, Int)
