@@ -4,4 +4,4 @@ project/project
 .idea/
 *.class
 *.log
-qlearning-maze.iml
+multiagent-qlearningmaze.iml
