@@ -8,7 +8,7 @@ trait Agent {
 
 	def runEpisode(eGreedyPolicy: EpsilonGreedy): Unit
 
-	def runEpisodes(eGreedyPolicy: EpsilonGreedy, numberOfIterations: Int): Unit
+	def runEpisodes(eGreedyPolicy: EpsilonGreedy, numberOfEpisodes: Int): Unit
 
 	def getBestPathFrom(state: State): Path
 

@@ -35,7 +35,7 @@ class BasicState(val coordY: Int, val coordX: Int, protected var actions: Seq[Ac
 
 	override def getLabel: String = label
 
-	override def getCoord: (Int, Int) = (coordY, coordY)
+	override def getCoord: (Int, Int) = (coordY, coordX)
 
 	override def toString: String = label
 

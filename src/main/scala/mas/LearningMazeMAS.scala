@@ -1,8 +1,11 @@
 package mas
 
-import agent.MASAgent
+import agent.{MASAgent, RunnableAgent}
 import environment.EnvironmentPiece
 import learning.QFunction
+import policy.EpsilonGreedyBounds
+
+import scala.collection.mutable
 
 class LearningMazeMAS(val environmentPieces: Array[Array[EnvironmentPiece]], val qFunction: QFunction) {
 
@@ -11,13 +14,11 @@ class LearningMazeMAS(val environmentPieces: Array[Array[EnvironmentPiece]], val
 
 	val gridOfAgents: Array[Array[MASAgent]] = Array.ofDim(gridVertHeight, gridHorizWidth) // TODO to hide in final version
 
-	for (posY <- 0 until gridVertHeight) // create and initialize all the agents on the grid
-		for (posX <- 0 until gridHorizWidth)
-			gridOfAgents(posY)(posX) = new MASAgent(environmentPieces(posY)(posX), qFunction, Set.empty[MASAgent])
+	/* Constructor */
+	forAllGridPositions((posY: Int, posX: Int) => gridOfAgents(posY)(posX) = new MASAgent(environmentPieces(posY)(posX), qFunction, Set.empty[MASAgent])) // create and initialize all the agents on the grid
 
-	for (posY <- 0 until gridVertHeight) // set all the neighbors for each agent
-		for (posX <- 0 until gridHorizWidth) {
-			var neighbors: Set[MASAgent] = Set.empty[MASAgent]
+	forAllGridPositions((posY: Int, posX: Int) => { // set all the neighbors for each agent
+			val neighbors: mutable.Set[MASAgent] = new mutable.HashSet[MASAgent]()
 
 			for {
 				(y, x) <- Seq((posY, posX-1), (posY+1, posX), (posY, posX+1), (posY-1, posX)) // sequence of the four possible agents
@@ -27,11 +28,56 @@ class LearningMazeMAS(val environmentPieces: Array[Array[EnvironmentPiece]], val
 				if x < gridHorizWidth
 			} neighbors += gridOfAgents(y)(x)
 
-			gridOfAgents(posY)(posX).setNeighborhoodAgents(neighbors)
-		}
+			gridOfAgents(posY)(posX).setNeighborhoodAgents(neighbors.toSet)
+		})
+	/*  */
 
-	def startSimulation(): Unit = {
+	/* Variables with getters and setters */
+	private var _epsilonGreedyValue: Double = _
+
+	private var _numberOfEpisodesToRun: Int = _
+
+	def epsilonGreedyValue: Double = _epsilonGreedyValue
+
+	def epsilonGreedyValue_=(value: Double): Unit = _epsilonGreedyValue = value
+
+	def numberOfEpisodesToRun: Int = _numberOfEpisodesToRun
+
+	def numberOfEpisodesToRun_=(value: Int): Unit = _numberOfEpisodesToRun = value
+	/*  */
+
+	def startSimulation(): Unit = { // starts the simulation with the current variables
+		require(Option(_epsilonGreedyValue).isDefined, "epsilon greedy policy not defined yet")
+		require(Option(_numberOfEpisodesToRun).isDefined, "the number of episodes to run not defined yet")
+
 		// TODO create ThreadPool of 'grid.height * grid.width' size with all agents running
+		val gridOfThreads: Array[Array[Thread]] = Array.ofDim[Thread](gridVertHeight, gridHorizWidth)
+
+		// create and initialize all threads
+		forAllGridPositions((posY: Int, posX: Int) =>
+			gridOfThreads(posY)(posX) = new Thread(
+				new RunnableAgent(gridOfAgents(posY)(posX),
+				new EpsilonGreedyBounds(epsilonGreedyValue, gridOfAgents(posY)(posX).getEnvironmentPiece.getPieceAngleAbsCoords),
+				numberOfEpisodesToRun)
+			)
+		)
+
+		/*forAllGridPositions((posY: Int, posX: Int) => { // one agent a time for testing with debug print
+			println("*** START agent (" + posY + ", " + posX + ") ***")
+			Simple4x4.showMaze()
+			gridOfThreads(posY)(posX).start()
+			gridOfThreads(posY)(posX).join()
+		})*/
+		// start all threads
+		forAllGridPositions((posY: Int, posX: Int) => gridOfThreads(posY)(posX).start())
+		// waiting for all threads to finish computation
+		forAllGridPositions((posY: Int, posX: Int) => gridOfThreads(posY)(posX).join())
+	}
+
+	private def forAllGridPositions(p: (Int, Int) => Unit): Unit = { // run a procedure for each position coordinate in the grid
+		for (posY <- 0 until gridVertHeight)
+			for (posX <- 0 until gridHorizWidth)
+				p(posY, posX)
 	}
 
 }

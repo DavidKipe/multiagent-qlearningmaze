@@ -7,7 +7,7 @@ import scala.collection.mutable
 
 class MazePiece(grid: Array[Array[State]], val coordY: Int, val coordX: Int) extends Maze(grid, None.orNull, None.orNull) with EnvironmentPiece {
 
-	require(coordY >= 0 && coordY >= 0, "The coordinates inside the entire environment cannot be negative")
+	require(coordY >= 0 && coordX >= 0, "The coordinates inside the entire environment cannot be negative")
 
 	protected val goalStatesSets: Seq[Set[State]] = createGoalStatesSets()
 
@@ -82,4 +82,6 @@ class MazePiece(grid: Array[Array[State]], val coordY: Int, val coordX: Int) ext
 	override def countNewEpisode(): Unit = _numberOfEpisodesRun += 1
 
 	override def numberOfEpisodesRun: Int = _numberOfEpisodesRun
+
+	def printGoalStates(): Unit = println(goalStatesSets(_numberOfEpisodesRun % goalStatesSets.length)) // debug print function
 }

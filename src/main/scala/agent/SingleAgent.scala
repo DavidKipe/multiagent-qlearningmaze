@@ -7,7 +7,7 @@ import learning.{QFunction, QMatrix}
 import policy.EpsilonGreedy
 import utilities.{Analyze, Exploration}
 
-class SingleAgent(protected val maze: Environment, protected var qFunction: QFunction) extends Agent {
+class SingleAgent(protected val maze: Environment, protected val qFunction: QFunction) extends Agent {
 
 	val qMatrix: QMatrix = new QMatrix()
 
@@ -15,8 +15,8 @@ class SingleAgent(protected val maze: Environment, protected var qFunction: QFun
 		_runEpisode(eGreedyPolicy)
 	}
 
-	override def runEpisodes(eGreedyPolicy: EpsilonGreedy, numberOfIterations: Int): Unit = {
-		for (_ <- 1 to numberOfIterations)
+	override def runEpisodes(eGreedyPolicy: EpsilonGreedy, numberOfEpisodes: Int): Unit = {
+		for (_ <- 1 to numberOfEpisodes)
 			_runEpisode(eGreedyPolicy)
 	}
 

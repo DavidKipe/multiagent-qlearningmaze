@@ -11,8 +11,8 @@ class MASAgent(maze: EnvironmentPiece, qFunction: QFunction, private var neighbo
 		_runEpisode(eGreedyPolicy)
 	}
 
-	override def runEpisodes(eGreedyPolicy: EpsilonGreedy, numberOfIterations: Int): Unit = {
-		for (_ <- 1 to numberOfIterations)
+	override def runEpisodes(eGreedyPolicy: EpsilonGreedy, numberOfEpisodes: Int): Unit = {
+		for (_ <- 1 to numberOfEpisodes)
 			_runEpisode(eGreedyPolicy)
 	}
 
@@ -37,6 +37,7 @@ class MASAgent(maze: EnvironmentPiece, qFunction: QFunction, private var neighbo
 
 	override def setNeighborhoodAgents(neighbors: Set[MASAgent]): Unit = neighboringAgents = neighbors
 
+	def getEnvironmentPiece: EnvironmentPiece = maze
 
 	// the edging state must be the goal states, but the action for going to the neighbor must be present for the algorithm formula
 	// but it must be not considered as a real action, it can not be taken
