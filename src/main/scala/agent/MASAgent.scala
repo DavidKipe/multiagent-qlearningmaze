@@ -5,7 +5,7 @@ import environment.state.State
 import learning.QFunction
 import policy.EpsilonGreedy
 
-class MASAgent(maze: EnvironmentPiece, qFunction: QFunction, private var neighboringAgents: Set[MASAgent]) extends SingleAgent(maze, qFunction) with AgentCommunication with AgentNeighborhood {
+class MASAgent(maze: EnvironmentPiece, qFunction: QFunction, private var neighboringAgents: Map[(Int, Int), MASAgent]) extends SingleAgent(maze, qFunction) with AgentCommunication with AgentNeighborhood {
 
 	override def runEpisode(eGreedyPolicy: EpsilonGreedy): Unit = {
 		_runEpisode(eGreedyPolicy)
@@ -18,6 +18,8 @@ class MASAgent(maze: EnvironmentPiece, qFunction: QFunction, private var neighbo
 
 	private def _runEpisode(eGreedyPolicy: EpsilonGreedy): Unit = {
 		super.runEpisode(eGreedyPolicy)
+
+		// TODO get from maze the not final states in the edge
 		/* TODO
 		*  get the max of the action values for each state in the edge
 		*  send new values to the neighborhood
@@ -33,11 +35,13 @@ class MASAgent(maze: EnvironmentPiece, qFunction: QFunction, private var neighbo
 		* */
 	}
 
-	override def getNeighborhoodAgents: Set[MASAgent] = neighboringAgents
+	override def getNeighboringAgents: Map[(Int, Int), MASAgent] = neighboringAgents
 
-	override def setNeighborhoodAgents(neighbors: Set[MASAgent]): Unit = neighboringAgents = neighbors
+	override def setNeighboringAgents(neighbors: Map[(Int, Int), MASAgent]): Unit = neighboringAgents = neighbors
 
 	def getEnvironmentPiece: EnvironmentPiece = maze
+
+	override def getCoords: (Int, Int) = maze.getPieceCoords
 
 	// the edging state must be the goal states, but the action for going to the neighbor must be present for the algorithm formula
 	// but it must be not considered as a real action, it can not be taken

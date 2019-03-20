@@ -19,6 +19,7 @@ class MazePiece(grid: Array[Array[State]], val coordY: Int, val coordX: Int) ext
 
 
 	private def createGoalStatesSets(): Seq[Set[State]] = { // calculation of goalStates
+		// TODO the final states in the edge should be only those can reach another environment piece (so there is a transaction to outside the env piece and not a wall for examples)
 		if (coordY == 0 && coordX == 0) // for the ending piece it is the original goal state
 			return Seq(Set[State](grid(0)(0)))
 

@@ -2,8 +2,8 @@ package agent
 
 trait AgentNeighborhood {
 
-	def getNeighborhoodAgents: Set[MASAgent]
+	def getNeighboringAgents: Map[(Int, Int), MASAgent]
 
-	def setNeighborhoodAgents(neighbors: Set[MASAgent]): Unit
+	def setNeighboringAgents(neighbors: Map[(Int, Int), MASAgent]): Unit
 
 }

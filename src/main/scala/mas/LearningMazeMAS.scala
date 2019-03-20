@@ -2,6 +2,7 @@ package mas
 
 import agent.{MASAgent, RunnableAgent}
 import environment.EnvironmentPiece
+import examples.maze.Simple4x4
 import learning.QFunction
 import policy.EpsilonGreedyBounds
 
@@ -15,10 +16,10 @@ class LearningMazeMAS(val environmentPieces: Array[Array[EnvironmentPiece]], val
 	val gridOfAgents: Array[Array[MASAgent]] = Array.ofDim(gridVertHeight, gridHorizWidth) // TODO to hide in final version
 
 	/* Constructor */
-	forAllGridPositions((posY: Int, posX: Int) => gridOfAgents(posY)(posX) = new MASAgent(environmentPieces(posY)(posX), qFunction, Set.empty[MASAgent])) // create and initialize all the agents on the grid
+	forAllGridPositions((posY: Int, posX: Int) => gridOfAgents(posY)(posX) = new MASAgent(environmentPieces(posY)(posX), qFunction, Map.empty[(Int, Int), MASAgent])) // create and initialize all the agents on the grid
 
 	forAllGridPositions((posY: Int, posX: Int) => { // set all the neighbors for each agent
-			val neighbors: mutable.Set[MASAgent] = new mutable.HashSet[MASAgent]()
+			val neighbors: mutable.Map[(Int, Int), MASAgent] = new mutable.HashMap[(Int, Int), MASAgent]()
 
 			for {
 				(y, x) <- Seq((posY, posX-1), (posY+1, posX), (posY, posX+1), (posY-1, posX)) // sequence of the four possible agents
@@ -26,9 +27,9 @@ class LearningMazeMAS(val environmentPieces: Array[Array[EnvironmentPiece]], val
 				if x >= 0
 				if y < gridVertHeight
 				if x < gridHorizWidth
-			} neighbors += gridOfAgents(y)(x)
+			} neighbors += ((y,x) -> gridOfAgents(y)(x))
 
-			gridOfAgents(posY)(posX).setNeighborhoodAgents(neighbors.toSet)
+			gridOfAgents(posY)(posX).setNeighboringAgents(neighbors.toMap)
 		})
 	/*  */
 
@@ -50,7 +51,6 @@ class LearningMazeMAS(val environmentPieces: Array[Array[EnvironmentPiece]], val
 		require(Option(_epsilonGreedyValue).isDefined, "epsilon greedy policy not defined yet")
 		require(Option(_numberOfEpisodesToRun).isDefined, "the number of episodes to run not defined yet")
 
-		// TODO create ThreadPool of 'grid.height * grid.width' size with all agents running
 		val gridOfThreads: Array[Array[Thread]] = Array.ofDim[Thread](gridVertHeight, gridHorizWidth)
 
 		// create and initialize all threads
@@ -62,16 +62,16 @@ class LearningMazeMAS(val environmentPieces: Array[Array[EnvironmentPiece]], val
 			)
 		)
 
-		/*forAllGridPositions((posY: Int, posX: Int) => { // one agent a time for testing with debug print
+		forAllGridPositions((posY: Int, posX: Int) => { // one agent a time for testing with debug print
 			println("*** START agent (" + posY + ", " + posX + ") ***")
 			Simple4x4.showMaze()
 			gridOfThreads(posY)(posX).start()
 			gridOfThreads(posY)(posX).join()
-		})*/
+		})
 		// start all threads
-		forAllGridPositions((posY: Int, posX: Int) => gridOfThreads(posY)(posX).start())
+		//forAllGridPositions((posY: Int, posX: Int) => gridOfThreads(posY)(posX).start())
 		// waiting for all threads to finish computation
-		forAllGridPositions((posY: Int, posX: Int) => gridOfThreads(posY)(posX).join())
+		//forAllGridPositions((posY: Int, posX: Int) => gridOfThreads(posY)(posX).join())
 	}
 
 	private def forAllGridPositions(p: (Int, Int) => Unit): Unit = { // run a procedure for each position coordinate in the grid

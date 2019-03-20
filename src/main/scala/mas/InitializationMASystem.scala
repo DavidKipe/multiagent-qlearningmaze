@@ -16,8 +16,7 @@ object InitializationMASystem {
 		val envGrid = environment.getGrid // get the grid of states
 		val (envHeight, envWidth): (Int, Int) = environment.gridSize // get the grid size
 
-		if (envWidth % numberOfHorizontalPieces != 0 || envHeight % numberOfVerticalPieces != 0) // check if splitting is perfectly divisible
-			throw new IllegalArgumentException
+		require(envWidth % numberOfHorizontalPieces == 0 && envHeight % numberOfVerticalPieces == 0, "The environment is not divisible by the given numbers")
 
 		val pieceWidth: Int = envWidth / numberOfHorizontalPieces // width of a single piece
 		val pieceHeight: Int = envHeight / numberOfVerticalPieces // height of a single piece
