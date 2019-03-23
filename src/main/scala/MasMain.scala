@@ -36,7 +36,7 @@ object MasMain {
 		val epsilonGreedy = new EpsilonGreedy(epsilon)
 		agent.runEpisodes(epsilonGreedy, 1000)
 
-		val dummy = 0
+		val dummy = 0 // breakpoint
 		/*
 		 TODO
 		 - DONE create a new "bestAction" in qMatrix class whose take also the boundaries of the environment piece, therefore excludes the states outside the environment boundaries

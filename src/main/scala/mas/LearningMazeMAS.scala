@@ -2,7 +2,6 @@ package mas
 
 import agent.{MASAgent, RunnableAgent}
 import environment.EnvironmentPiece
-import examples.maze.Simple4x4
 import learning.QFunction
 import policy.EpsilonGreedyBounds
 
@@ -62,16 +61,16 @@ class LearningMazeMAS(val environmentPieces: Array[Array[EnvironmentPiece]], val
 			)
 		)
 
-		forAllGridPositions((posY: Int, posX: Int) => { // one agent a time for testing with debug print
+		/*forAllGridPositions((posY: Int, posX: Int) => { // one agent a time for testing with debug print
 			println("*** START agent (" + posY + ", " + posX + ") ***")
 			Simple4x4.showMaze()
 			gridOfThreads(posY)(posX).start()
 			gridOfThreads(posY)(posX).join()
-		})
+		})*/
 		// start all threads
-		//forAllGridPositions((posY: Int, posX: Int) => gridOfThreads(posY)(posX).start())
+		forAllGridPositions((posY: Int, posX: Int) => gridOfThreads(posY)(posX).start())
 		// waiting for all threads to finish computation
-		//forAllGridPositions((posY: Int, posX: Int) => gridOfThreads(posY)(posX).join())
+		forAllGridPositions((posY: Int, posX: Int) => gridOfThreads(posY)(posX).join())
 	}
 
 	private def forAllGridPositions(p: (Int, Int) => Unit): Unit = { // run a procedure for each position coordinate in the grid

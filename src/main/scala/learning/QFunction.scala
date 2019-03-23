@@ -16,4 +16,16 @@ class QFunction(val learningRate: Double, val discountFactor: Double) {
 	}
 
 	def value(qMatrix: QMatrix, state: State, action: Action): Double = value(qMatrix, state, action.act)
+
+	def valueGivenMaxFutureAction(qMatrix: QMatrix, maxFutureAction: Double, state: State, action: Action): Double = valueGivenMaxFutureAction(qMatrix, maxFutureAction, state, action.act)
+
+	def valueGivenMaxFutureAction(qMatrix: QMatrix, maxFutureAction: Double, state: State, transition: Transition): Double = {
+		val newState = transition.newState // get the new state from transition
+
+		val oldValue = qMatrix.getOrDefault(state, newState) // get the old q value from q-matrix for this transition
+		val learnedValue = transition.reward + (discountFactor * maxFutureAction) // calculate the learning value
+
+		((1.0 - learningRate) * oldValue) + (learningRate * learnedValue) // calculate the new q-value taking into account the old q-value and the learning rate
+	}
+
 }
