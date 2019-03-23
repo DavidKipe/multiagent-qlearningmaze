@@ -2,7 +2,6 @@ package utilities
 
 import environment.Environment
 import environment.action.Action
-import environment.maze.MazePiece
 import environment.state.State
 import learning.{QFunction, QMatrix}
 import policy.EpsilonGreedy
@@ -11,7 +10,7 @@ object Exploration {
 
 	def episode(qMatrix: QMatrix, qFunction: QFunction, maze: Environment, policy: EpsilonGreedy): Unit = {
 		println("Start episode")
-		maze.asInstanceOf[MazePiece].printGoalStates() // debug only for mas
+		//maze.asInstanceOf[MazePiece].printGoalStates() // debug only for mas
 
 		var currState: State = maze.getRandomState // each episode starts from a random state of the maze
 		var oldState: State = currState

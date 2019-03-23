@@ -3,15 +3,19 @@ package environment.action
 import environment.Transition
 import environment.state.State
 
-class BasicAction(val label: String, protected val toState: State, protected var reward: Int) extends Action { // the only type of action in this project (the label [String] is the identifier of a BasicAction)
+class BasicAction(protected val toState: State, protected var reward: Int) extends Action { // the only type of action in this project (the toState and reward values are the identifier of a BasicAction)
 
-	require(label != null && label.nonEmpty, "The label of an Action can not be null or empty")
 	require(toState != null, "An Action require a target State")
 
-	def this(label: String, toState: State) = this(label, toState, 0)
-	// TODO add method to create automatically the label "-> <toState>"
+	var label: String = createLabel()
 
-	override private[environment] def setReward(reward: Int): Unit = this.reward = reward
+	def this(toState: State) = this(toState, 0)
+
+	private def createLabel(): String = "-> " + toState.getLabel + "[" + reward + "]"
+
+	override private[environment] def setReward(reward: Int): Unit = { this.reward = reward; label = createLabel() }
+
+	override def getLabel: String = label
 
 	override def act: Transition = Transition(toState, reward)
 
@@ -23,12 +27,13 @@ class BasicAction(val label: String, protected val toState: State, protected var
 	override def equals(other: Any): Boolean = other match {
 		case that: BasicAction =>
 			(that canEqual this) &&
-				label == that.label
+				toState == that.toState &&
+				reward == that.reward
 		case _ => false
 	}
 
 	override def hashCode(): Int = {
-		val state = Seq(label)
+		val state = Seq(toState, reward)
 		state.map(_.hashCode()).foldLeft(0)((a, b) => 31 * a + b)
 	}
 }

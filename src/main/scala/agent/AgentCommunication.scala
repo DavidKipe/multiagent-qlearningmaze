@@ -6,6 +6,6 @@ trait AgentCommunication {
 
 	def getCoords: (Int, Int)
 
-	def putQValueAt(state: State, value: Double): Unit
+	def updateQValue(toState: State, maxValueAction: Double): Unit
 
 }

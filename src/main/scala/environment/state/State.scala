@@ -10,6 +10,10 @@ trait State {
 
 	def getActions(anglesBoundaries: ((Int, Int), (Int, Int))): Seq[Action]
 
+	def hasActionTo(state: State): Boolean
+
+	def getActionTo(state: State): Option[Action]
+
 	def getLabel: String
 
 	def getCoord: (Int, Int)

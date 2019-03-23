@@ -89,6 +89,19 @@ class QMatrix {
 	}
 
 	/* Overloading these functions for MAS implementation  */
+	// TODO find a better way to not replicate the code
+	def getMax(state: State, anglesBoundaries: ((Int, Int), (Int, Int))): Double = { // return the highest value for an Action given a State
+		var max_q = Double.NegativeInfinity
+
+		for (a <- state.getActions(anglesBoundaries)) {
+			val q = getOrDefault(state, a)
+			if (q > max_q)
+				max_q = q
+		}
+
+		max_q
+	}
+
 	def bestActions(state: State, anglesBoundaries: ((Int, Int), (Int, Int))): Seq[Action] = { // returns the best actions for a State
 		val bestActions = ArrayBuffer[Action]()
 		var max_q = Double.NegativeInfinity

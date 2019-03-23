@@ -26,7 +26,7 @@ class Path(val startingSize: Int = 0) extends Iterable[State] { // this class st
 		for (label <- pathLabelsIterator) {
 			val newState = new OneActionState(label)
 
-			currState.setAction(Some(new BasicAction("-", newState)))
+			currState.setAction(Some(new BasicAction(newState)))
 
 			currState = newState
 			fromLabel = label

@@ -6,6 +6,8 @@ trait Action {
 
 	private[environment] def setReward(reward: Int): Unit
 
+	def getLabel: String
+
 	def act: Transition
 
 }

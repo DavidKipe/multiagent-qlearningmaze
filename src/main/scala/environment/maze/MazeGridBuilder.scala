@@ -28,12 +28,12 @@ class MazeGridBuilder(val x: Int, val y: Int, val rewardBonus: Int = MazeGridBui
 
 		if (to_s1.isEmpty) {
 			val s1 = grid(s1_i)(s1_j)
-			to_s1 = Option(new BasicAction("to->" + s1, s1))
+			to_s1 = Option(new BasicAction(s1))
 			actionCache(s1_i)(s1_j) = to_s1
 		}
 		if (to_s2.isEmpty) {
 			val s2 = grid(s2_i)(s2_j)
-			to_s2 = Option(new BasicAction("to->" + s2, s2))
+			to_s2 = Option(new BasicAction(s2))
 			actionCache(s2_i)(s2_j) = to_s2
 		}
 

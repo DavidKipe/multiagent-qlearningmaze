@@ -57,7 +57,7 @@ class LearningMazeMAS(val environmentPieces: Array[Array[EnvironmentPiece]], val
 		forAllGridPositions((posY: Int, posX: Int) =>
 			gridOfThreads(posY)(posX) = new Thread(
 				new RunnableAgent(gridOfAgents(posY)(posX),
-				new EpsilonGreedyBounds(epsilonGreedyValue, gridOfAgents(posY)(posX).getEnvironmentPiece.getPieceAngleAbsCoords),
+				new EpsilonGreedyBounds(epsilonGreedyValue, gridOfAgents(posY)(posX).getEnvironmentPiece.getAngleStatesAbsCoords),
 				numberOfEpisodesToRun)
 			)
 		)

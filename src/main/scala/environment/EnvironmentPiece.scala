@@ -8,8 +8,14 @@ trait EnvironmentPiece extends Environment {
 
 	def isStartingStateValid: Boolean
 
-	def getPieceAngleAbsCoords: ((Int, Int), (Int, Int))
+	def getAngleStatesAbsCoords: ((Int, Int), (Int, Int)) // returns the absolute coords of states in the top left and bottom right corner of this environment piece
 
-	def getPieceCoords: (Int, Int)
+	def getPieceCoords: (Int, Int) // returns the coordinates of this environment piece, respect to the whole environment
+
+	def getBorderState: Set[State]
+
+	def getAllFinalStates: Set[State]
+
+	def getFinalStatesForLastEpisode: Set[State]
 
 }

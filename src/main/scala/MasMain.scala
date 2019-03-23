@@ -1,14 +1,16 @@
+import agent.SingleAgent
 import environment.maze.MazeGridBuilder
 import examples.maze.Simple4x4
-import learning.{QFunction, QMatrix}
+import learning.QFunction
 import mas.{InitializationMASystem, LearningMazeMAS}
+import policy.EpsilonGreedy
 
 object MasMain {
 
 	/* parameters for the q-function */
 	private val lRate = .8      // learning rate
 
-	private val dFactor = .9    // discount factor
+	private val dFactor = .8    // discount factor
 	/*  */
 
 	private val epsilon = .2    // the percentage of random actions taken for the e-greedy exploration policy
@@ -16,7 +18,6 @@ object MasMain {
 
 	def main(args: Array[String]): Unit = {
 		val qFunction = new QFunction(lRate, dFactor)
-		val qMatrix = new QMatrix
 		val maze4x4 = Simple4x4.construct(MazeGridBuilder.WEAK_REWARD)
 
 		//Simple4x4.showMaze()
@@ -30,6 +31,12 @@ object MasMain {
 		//val eGreedy = new EpsilonGreedyBounds(epsilon, pieces(0)(1).getPieceAngleAbsCoords)
 		//agents.gridOfAgents(0)(1).runEpisodes(eGreedy, 50)
 
+		// compare with single agent
+		val agent = new SingleAgent(maze4x4, qFunction)
+		val epsilonGreedy = new EpsilonGreedy(epsilon)
+		agent.runEpisodes(epsilonGreedy, 1000)
+
+		val dummy = 0
 		/*
 		 TODO
 		 - DONE create a new "bestAction" in qMatrix class whose take also the boundaries of the environment piece, therefore excludes the states outside the environment boundaries

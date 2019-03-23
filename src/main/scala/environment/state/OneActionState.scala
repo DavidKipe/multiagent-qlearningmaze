@@ -22,9 +22,13 @@ class OneActionState(val coordY: Int, val coordX: Int, protected var optAction: 
 
 	def getAction: Option[Action] = optAction
 
+	override def hasActionTo(state: State): Boolean = ???
+
 	override def getActions: Seq[Action] = optAction match { case None => Array.empty[Action]; case Some(action) => Seq(action) }
 
 	override def getActions(anglesBoundaries: ((Int, Int), (Int, Int))): Seq[Action] = ???
+
+	override def getActionTo(state: State): Option[Action] = ???
 
 	override def getLabel: String = label
 
