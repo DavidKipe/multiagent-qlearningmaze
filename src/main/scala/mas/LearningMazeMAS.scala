@@ -2,6 +2,7 @@ package mas
 
 import agent.{MASAgent, RunnableAgent}
 import environment.EnvironmentPiece
+import environment.path.Path
 import learning.QFunction
 import policy.EpsilonGreedyBounds
 
@@ -56,7 +57,7 @@ class LearningMazeMAS(val environmentPieces: Array[Array[EnvironmentPiece]], val
 		forAllGridPositions((posY: Int, posX: Int) =>
 			gridOfThreads(posY)(posX) = new Thread(
 				new RunnableAgent(gridOfAgents(posY)(posX),
-				new EpsilonGreedyBounds(epsilonGreedyValue, gridOfAgents(posY)(posX).getEnvironmentPiece.getAngleStatesAbsCoords),
+				new EpsilonGreedyBounds(epsilonGreedyValue, gridOfAgents(posY)(posX).getAngleStatesAbsCoords),
 				numberOfEpisodesToRun)
 			)
 		)
@@ -77,6 +78,40 @@ class LearningMazeMAS(val environmentPieces: Array[Array[EnvironmentPiece]], val
 		for (posY <- 0 until gridVertHeight)
 			for (posX <- 0 until gridHorizWidth)
 				p(posY, posX)
+	}
+
+	def generateTheBestPath(): Path = {
+		val bestPath = new Path()
+
+		val finalAgent = gridOfAgents.head.head
+		var currAgent = gridOfAgents.last.last // the bottom right corner agent/environment piece is the starting one
+		var nextAgentFound = false
+
+		do {
+			nextAgentFound = false
+			val currPath = currAgent.getBestPathFromStartingState // get the best path for this env piece
+
+			val nextStartingState = currPath.last // get the last state which is the starting state for the next env piece
+			bestPath --> currPath // append the current path to the best path
+
+			if (currAgent != finalAgent) { // if don't reach the last agent
+				bestPath -= nextStartingState // delete the last state from the best path because will be append again in next iteration
+
+				val currNeighbors = currAgent.getNeighboringAgents // get all the neighbors
+				for (neighbor <- currNeighbors) // iterate over them and find the next one
+					if (neighbor.isThisPartOfYourEnv(nextStartingState)) {
+						currAgent = neighbor
+						currAgent.setStartingState(nextStartingState)
+						nextAgentFound = true
+					}
+			}
+
+			if (!nextAgentFound && currAgent != finalAgent)
+				throw new Exception("Could not find a path ending in the goal state")
+
+		} while(nextAgentFound)
+
+		bestPath
 	}
 
 }

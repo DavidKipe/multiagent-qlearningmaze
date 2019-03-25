@@ -21,16 +21,20 @@ class BasicState(val coordY: Int, val coordX: Int, protected var actions: Seq[Ac
 	override def getActions: Seq[Action] = actions
 
 	override def getActions(anglesBoundaries: ((Int, Int), (Int, Int))): Seq[Action] = {
-		val ((firstY, firstX), (lastY, lastX)) = anglesBoundaries
 		val resActions = ArrayBuffer[Action]()
 
-		for (action <- actions) {
-			val (y, x) = action.act.newState.getCoord
-			if (y >= firstY && y <= lastY && x >= firstX && x <= lastX)
+		for (action <- actions)
+			if (action.act.newState.isInsideBoundaries(anglesBoundaries))
 				resActions.append(action)
-		}
 
 		resActions
+	}
+
+	override def isInsideBoundaries(anglesBoundaries: ((Int, Int), (Int, Int))): Boolean = {
+		val ((firstY, firstX), (lastY, lastX)) = anglesBoundaries
+		val (y, x) = getCoord
+
+		y >= firstY && y <= lastY && x >= firstX && x <= lastX
 	}
 
 	override def hasActionTo(state: State): Boolean = actions exists ((a: Action) => {/*print("DEBUG: " + a.act.newState.getLabel + " =? " + state.getLabel + " -> "); println(a.act.newState == state);*/ a.act.newState == state})

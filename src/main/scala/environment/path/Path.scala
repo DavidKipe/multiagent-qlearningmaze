@@ -15,7 +15,7 @@ class Path(val startingSize: Int = 0) extends Iterable[State] { // this class st
 		statesArray = new ArrayBuffer[State]()
 
 	def this(pathLabels: PathLabels) {
-		this(pathLabels.numberOfSteps + 1)
+		this(pathLabels.numberOfStates)
 
 		val pathLabelsIterator = pathLabels.iterator
 		var fromLabel = pathLabelsIterator.next()
@@ -33,12 +33,31 @@ class Path(val startingSize: Int = 0) extends Iterable[State] { // this class st
 		}
 	}
 
+	def this(oldPath: Path) {
+		this(oldPath.numberOfStates)
+		oldPath.foreach(s => this.statesArray += s)
+	}
+
 	def ->(state: State): Path = {
 		statesArray += state
 		this
 	}
 
+	def -->(states: Iterable[State]): Path = {
+		statesArray ++= states
+		this
+	}
+
+	def -->(otherPath: Path): Path = {
+		statesArray ++= otherPath
+		this
+	}
+
+	def -=(state: State): Unit = statesArray -= state
+
 	def numberOfSteps: Int = statesArray.length - 1
+
+	def numberOfStates: Int = statesArray.length
 
 	override def iterator: Iterator[State] = statesArray.iterator
 

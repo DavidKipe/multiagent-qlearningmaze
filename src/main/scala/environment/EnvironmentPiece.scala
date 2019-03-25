@@ -18,4 +18,6 @@ trait EnvironmentPiece extends Environment {
 
 	def getFinalStatesForLastEpisode: Set[State]
 
+	def isPartOfThisEnvPiece(state: State): Boolean
+
 }

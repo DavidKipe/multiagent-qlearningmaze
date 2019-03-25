@@ -30,6 +30,8 @@ class OneActionState(val coordY: Int, val coordX: Int, protected var optAction: 
 
 	override def getActionTo(state: State): Option[Action] = ???
 
+	override def isInsideBoundaries(anglesBoundaries: ((Int, Int), (Int, Int))): Boolean = ???
+
 	override def getLabel: String = label
 
 	override def getCoord: (Int, Int) = (coordY, coordX)

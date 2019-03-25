@@ -1,9 +1,11 @@
 package agent
 
 import environment.EnvironmentPiece
+import environment.path.Path
 import environment.state.State
 import learning.QFunction
 import policy.EpsilonGreedy
+import utilities.Analyze
 
 class MASAgent(maze: EnvironmentPiece, qFunction: QFunction, private var neighboringAgents: Map[(Int, Int), MASAgent]) extends SingleAgent(maze, qFunction) with AgentCommunication with AgentNeighborhood {
 
@@ -55,8 +57,10 @@ class MASAgent(maze: EnvironmentPiece, qFunction: QFunction, private var neighbo
 		for (s <- maze.getGrid.flatten) {
 			val optAction = s.getActionTo(toState)
 
-			if (optAction.isDefined)
-				qMatrix.put(s, toState, qFunction.valueGivenMaxFutureAction(qMatrix, maxValueAction, s, optAction.get))
+			if (optAction.isDefined) {
+				val newValue = qFunction.valueGivenMaxFutureAction(qMatrix, maxValueAction, s, optAction.get)
+				qMatrix.put(s, toState, newValue)
+			}
 		}
 		/*
 		*  check if state is a valid state for me, otherwise discard (could be simply checking if the state is not part of my environment piece)
@@ -65,16 +69,33 @@ class MASAgent(maze: EnvironmentPiece, qFunction: QFunction, private var neighbo
 		* */
 	}
 
-	override def getNeighboringAgents: Map[(Int, Int), MASAgent] = neighboringAgents
+	override def getNeighboringAgents: Iterable[MASAgent] = neighboringAgents.values
 
 	override def setNeighboringAgents(neighbors: Map[(Int, Int), MASAgent]): Unit = neighboringAgents = neighbors
 
-	def getEnvironmentPiece: EnvironmentPiece = maze
+	override def getAngleStatesAbsCoords: ((Int, Int), (Int, Int)) = maze.getAngleStatesAbsCoords
+
+	override def isThisPartOfYourEnv(state: State): Boolean = maze.isPartOfThisEnvPiece(state)
+
+	override def setStartingState(startingState: State): Unit = maze.setStartingState(startingState)
 
 	override def getCoords: (Int, Int) = (envCoordY, envCoordX)
 
-	// the edging state must be the goal states, but the action for going to the neighbor must be present for the algorithm formula
-	// but it must be not considered as a real action, it can not be taken
+	override def getBestPathFromStartingState: Path = if (envCoordY == 0 && envCoordX == 0) Analyze.getBestPath(qMatrix, maze) else Analyze.getBestPathForEnvPiece(qMatrix, maze)
 
-	// the edging action will be "orphan" but will be only in the goal state, so they will not be taken
+
+	def canEqual(other: Any): Boolean = other.isInstanceOf[MASAgent]
+
+	override def equals(other: Any): Boolean = other match {
+		case that: MASAgent =>
+			(that canEqual this) &&
+				envCoordY == that.envCoordY &&
+				envCoordX == that.envCoordX
+		case _ => false
+	}
+
+	override def hashCode(): Int = {
+		val state = Seq(envCoordY, envCoordX)
+		state.map(_.hashCode()).foldLeft(0)((a, b) => 31 * a + b)
+	}
 }

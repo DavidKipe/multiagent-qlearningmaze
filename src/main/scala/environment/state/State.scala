@@ -18,4 +18,6 @@ trait State {
 
 	def getCoord: (Int, Int)
 
+	def isInsideBoundaries(anglesBoundaries: ((Int, Int), (Int, Int))): Boolean
+
 }

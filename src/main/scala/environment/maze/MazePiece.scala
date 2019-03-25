@@ -9,6 +9,8 @@ class MazePiece(grid: Array[Array[State]], val coordY: Int, val coordX: Int) ext
 
 	require(coordY >= 0 && coordX >= 0, "The coordinates inside the entire environment cannot be negative")
 
+	protected val angleStatesAbsCoords: ((Int, Int), (Int, Int)) = (grid(0)(0).getCoord, grid(y-1)(x-1).getCoord)
+
 	protected val finalStatesSets: Seq[Set[State]] = createFinalStatesSets()
 
 	protected val nOfGoalSets: Int = finalStatesSets.length
@@ -17,7 +19,7 @@ class MazePiece(grid: Array[Array[State]], val coordY: Int, val coordX: Int) ext
 
 	protected var _numberOfEpisodesRun: Int = 0
 
-	private var mostValuableStartingState: State = _
+	protected var mostValuableStartingState: State = _
 
 
 	private def createFinalStatesSets(): Seq[Set[State]] = { // calculation of goalStates
@@ -93,7 +95,7 @@ class MazePiece(grid: Array[Array[State]], val coordY: Int, val coordX: Int) ext
 
 	override def isGoal(state: State): Boolean = getFinalStatesForLastEpisode contains state
 
-	override def getAngleStatesAbsCoords: ((Int, Int), (Int, Int)) = (grid(0)(0).getCoord, grid(y-1)(x-1).getCoord)
+	override def getAngleStatesAbsCoords: ((Int, Int), (Int, Int)) = angleStatesAbsCoords
 
 	override def getPieceCoords: (Int, Int) = (coordY, coordX)
 
@@ -106,6 +108,8 @@ class MazePiece(grid: Array[Array[State]], val coordY: Int, val coordX: Int) ext
 	override def getAllFinalStates: Set[State] = finalStatesSets.flatten.toSet
 
 	override def getFinalStatesForLastEpisode: Set[State] = finalStatesSets(_numberOfEpisodesRun % finalStatesSets.length)
+
+	override def isPartOfThisEnvPiece(state: State): Boolean = state.isInsideBoundaries(angleStatesAbsCoords)
 
 	def printGoalStates(): Unit = println(finalStatesSets(_numberOfEpisodesRun % finalStatesSets.length)) // debug print function
 }

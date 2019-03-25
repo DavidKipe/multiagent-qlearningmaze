@@ -18,6 +18,8 @@ class PathLabels(val startingSize: Int = 0) extends Iterable[String] { // this c
 
 	def numberOfSteps: Int = labelArray.length - 1
 
+	def numberOfStates: Int = labelArray.length
+
 	def intPairIterator: Iterator[(Int, Int)] = labelArray.iterator
 
 	override def iterator: Iterator[String] = labelArray.map(pair => PathLabels.createLabel(pair._1, pair._2)).iterator

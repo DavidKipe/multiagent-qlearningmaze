@@ -1,21 +1,26 @@
 package utilities
 
-import environment.Environment
 import environment.action.Action
 import environment.path.{Path, PathLabels}
 import environment.state.State
+import environment.{Environment, EnvironmentPiece}
 import exception.NoSuchPathFound
 import learning.QMatrix
 import policy.BestDeterministic
 
 object Analyze { // this static methods analyze the paths to printing information about the process
 
-	def getBestPathFrom(qMatrix: QMatrix, maze: Environment, startingState: State): Path = {
+	// best path for an entire env or for last piece
+	def getBestPath(qMatrix: QMatrix, maze: Environment): Path = getBestPathPred(qMatrix, maze.getStartingState, s => maze.isGoal(s))
+
+	// best path for an env piece
+	def getBestPathForEnvPiece(qMatrix: QMatrix, mazePiece: EnvironmentPiece): Path = getBestPathPred(qMatrix, mazePiece.getStartingState, s => !mazePiece.isPartOfThisEnvPiece(s))
+
+	private def getBestPathPred(qMatrix: QMatrix, startingState: State, isGoal: State => Boolean): Path = { // calculate the best deterministic path
 		val policy = new BestDeterministic()
 		val path = new Path()
 
 		var currState: State = startingState
-
 		path -> currState
 
 		do {
@@ -23,13 +28,13 @@ object Analyze { // this static methods analyze the paths to printing informatio
 			currState = selected_a.act.newState
 
 			path -> currState
-		} while (!maze.isGoal(currState))
+		} while (!isGoal(currState))
 
 		path
 	}
 
 	def printBestPathStats(qMatrix: QMatrix, maze: Environment): Unit = { // given a maze it follows the best path using the best deterministic policy
-		val bestPathIterator = getBestPathFrom(qMatrix, maze, maze.getStartingState).iterator
+		val bestPathIterator = getBestPath(qMatrix, maze).iterator
 
 		var currState: State = bestPathIterator.next()
 		var oldState: State = currState

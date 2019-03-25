@@ -23,18 +23,24 @@ object MasMain {
 		//Simple4x4.showMaze()
 		println(maze4x4)
 		val pieces = InitializationMASystem.splitEnvironment(maze4x4,2,2)
-		val agents = new LearningMazeMAS(pieces, qFunction)
-		agents.epsilonGreedyValue = epsilon
-		agents.numberOfEpisodesToRun = 1000
+		val mas = new LearningMazeMAS(pieces, qFunction)
+		mas.epsilonGreedyValue = epsilon
+		mas.numberOfEpisodesToRun = 1000
 
-		agents.startSimulation()
+		mas.startSimulation()
 		//val eGreedy = new EpsilonGreedyBounds(epsilon, pieces(0)(1).getPieceAngleAbsCoords)
 		//agents.gridOfAgents(0)(1).runEpisodes(eGreedy, 50)
+
+		val bestPath = mas.generateTheBestPath()
 
 		// compare with single agent
 		val agent = new SingleAgent(maze4x4, qFunction)
 		val epsilonGreedy = new EpsilonGreedy(epsilon)
-		agent.runEpisodes(epsilonGreedy, 1000)
+		agent.runEpisodes(epsilonGreedy, 4000)
+
+		Simple4x4.showMaze()
+		println("MAS bestpath: " + bestPath)
+		println("SA  bestpath: " + agent.getBestPathFromStartingState)
 
 		val dummy = 0 // breakpoint
 		/*
