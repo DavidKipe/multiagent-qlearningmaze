@@ -18,7 +18,7 @@ class MASAgent(maze: EnvironmentPiece, qFunction: QFunction, private var neighbo
 
 	override def runEpisodes(eGreedyPolicy: EpsilonGreedy, numberOfEpisodes: Int): Unit = {
 		for (_ <- 1 to numberOfEpisodes)
-		_runEpisode(eGreedyPolicy)
+			_runEpisode(eGreedyPolicy)
 	}
 
 	private def _runEpisode(eGreedyPolicy: EpsilonGreedy): Unit = {
@@ -54,7 +54,7 @@ class MASAgent(maze: EnvironmentPiece, qFunction: QFunction, private var neighbo
 	override def updateQValue(toState: State, maxValueAction: Double): Unit = { // TODO must be an async method
 		// this procedure receive the max value action for the given state in another environment and calculate the new q-value for this environment
 
-		for (s <- maze.getGrid.flatten) {
+		for (s <- maze.getBorderState) {
 			val optAction = s.getActionTo(toState)
 
 			if (optAction.isDefined) {

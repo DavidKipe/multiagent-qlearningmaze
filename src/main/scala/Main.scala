@@ -9,12 +9,12 @@ import utilities.Analyze
 object Main {
 
 	/* parameters for the q-function */
-	private val lRate = .8      // learning rate
+	val lRate = .8      // learning rate
 
-	private val dFactor = .9    // discount factor
+	val dFactor = .9    // discount factor
 	/*  */
 
-	private val epsilon = .2    // the percentage of random actions taken for the e-greedy exploration policy
+	val epsilon = .2    // the percentage of random actions taken for the e-greedy exploration policy
 
 
 	def main(args: Array[String]): Unit = {

@@ -19,6 +19,7 @@ class QFunction(val learningRate: Double, val discountFactor: Double) {
 
 	def valueGivenMaxFutureAction(qMatrix: QMatrix, maxFutureAction: Double, state: State, action: Action): Double = valueGivenMaxFutureAction(qMatrix, maxFutureAction, state, action.act)
 
+	// TODO not repeat the code
 	def valueGivenMaxFutureAction(qMatrix: QMatrix, maxFutureAction: Double, state: State, transition: Transition): Double = {
 		val newState = transition.newState // get the new state from transition
 

@@ -11,9 +11,9 @@ import scala.collection.mutable
 class LearningMazeMAS(val environmentPieces: Array[Array[EnvironmentPiece]], val qFunction: QFunction) {
 
 	val gridVertHeight: Int = environmentPieces.length
-	val gridHorizWidth: Int = if (gridVertHeight == 0) 0 else environmentPieces(0).length
+	val gridHorizWidth: Int = if (gridVertHeight == 0) 0 else environmentPieces.head.length
 
-	val gridOfAgents: Array[Array[MASAgent]] = Array.ofDim(gridVertHeight, gridHorizWidth) // TODO to hide in final version
+	private val gridOfAgents: Array[Array[MASAgent]] = Array.ofDim(gridVertHeight, gridHorizWidth)
 
 	/* Constructor */
 	forAllGridPositions((posY: Int, posX: Int) => gridOfAgents(posY)(posX) = new MASAgent(environmentPieces(posY)(posX), qFunction, Map.empty[(Int, Int), MASAgent])) // create and initialize all the agents on the grid

@@ -9,7 +9,7 @@ import policy.EpsilonGreedy
 object Exploration {
 
 	def episode(qMatrix: QMatrix, qFunction: QFunction, maze: Environment, policy: EpsilonGreedy): Unit = {
-		println("Start episode")
+		//println("Start episode")
 		//maze.asInstanceOf[MazePiece].printGoalStates() // debug only for mas
 
 		var currState: State = maze.getRandomState // each episode starts from a random state of the maze
@@ -25,10 +25,10 @@ object Exploration {
 			oldState = currState
 			currState = selected_a.act.newState // go to the new state
 
-			policy.printHeadAction() // debug printing part
-			println(oldState + " " + selected_a + " - q: " + q)
+			//policy.printHeadAction() // debug printing part
+			//println(oldState + " " + selected_a + " - q: " + q)
 		} while (!maze.isGoal(currState)) // the episode ends when it reaches the final state
-		println("End episode\n")
+		//println("End episode\n")
 	}
 
 }
