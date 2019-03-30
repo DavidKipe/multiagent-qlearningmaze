@@ -3,12 +3,12 @@ package agent
 import environment.EnvironmentPiece
 import environment.path.Path
 import environment.state.State
-import learning.QFunction
+import learning.{QFunction, QMatrix}
 import policy.EpsilonGreedy
 import utilities.Analyze
 
-class MASAgent(maze: EnvironmentPiece, qFunction: QFunction, private var neighboringAgents: Map[(Int, Int), MASAgent]) extends SingleAgent(maze, qFunction) with AgentCommunication with AgentNeighborhood {
-
+class MASAgent(maze: EnvironmentPiece, qFunction: QFunction, private var neighboringAgents: Map[(Int, Int), MASAgent]) extends SingleAgent(new QMatrix, maze, qFunction, new EpsilonGreedy(.2), 100) with AgentCommunication with AgentNeighborhood {
+	// TODO adapt for JADE
 	val ((firstY, firstX), (lastY, lastX)) = maze.getAngleStatesAbsCoords // delimiters coordinates of this environment
 	val (envCoordY, envCoordX) = maze.getPieceCoords
 

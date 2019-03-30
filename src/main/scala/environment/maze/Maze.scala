@@ -10,7 +10,7 @@ class Maze (protected val grid: Array[Array[State]], protected val startingState
 	val x: Int = grid.length
 	val y: Int = if (x == 0) 0 else grid(0).length
 
-	private val random = new Random()
+	private val random = new Random
 
 
 	override def gridSize: (Int, Int) = (x, y)

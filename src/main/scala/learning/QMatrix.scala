@@ -38,7 +38,7 @@ class QMatrix {
 
 	def getOrDefault(state: State, action: Action): Double = getOrDefault(state, action.act)
 
-	def getByLabel(fromLabel: String, toLabel: String): Option[Double] = get(new BasicState(fromLabel), new BasicState(toLabel))
+	def getByLabel(fromCoords: (Int, Int), toCoords: (Int, Int)): Option[Double] = get(new BasicState(fromCoords), new BasicState(toCoords))
 
 
 	def getMax(state: State): Double = { // return the highest value for an Action given a State

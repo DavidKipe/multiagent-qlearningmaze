@@ -1,7 +1,13 @@
 package exception
 
+import utilities.Utils
+
 class NoSuchPathFound(protected val stepNotFound: (String, String), protected val extraInfo: String = "", override protected val cause: Throwable = None.orNull)
 	extends MazeException(NoSuchPathFound.getMessage(stepNotFound._1, stepNotFound._2, extraInfo), cause) {
+
+	def this(fromCoords: (Int, Int), toCoords: (Int, Int), extraInfo: String) {
+		this((Utils.coordsToLabel(fromCoords), Utils.coordsToLabel(toCoords)), extraInfo)
+	}
 
 }
 

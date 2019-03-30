@@ -2,23 +2,33 @@ package agent
 
 import environment.Environment
 import environment.path.Path
+import jade.core.behaviours.SimpleBehaviour
 import learning.{QFunction, QMatrix}
 import policy.EpsilonGreedy
 import utilities.{Analyze, Exploration}
 
-class SingleAgent(protected val maze: Environment, protected val qFunction: QFunction) extends Agent {
+class SingleAgent(val qMatrix: QMatrix, val maze: Environment, val qFunction: QFunction, val eGreedyPolicy: EpsilonGreedy = None.orNull, val numberOfEpisodes: Int = 0) extends Agent {
 
-	val qMatrix: QMatrix = new QMatrix()
+	override def setup(): Unit = addBehaviour(new RunEpisodesBehavior)
 
-	override def runEpisode(eGreedyPolicy: EpsilonGreedy): Unit = _runEpisode(eGreedyPolicy)
+	protected class RunEpisodesBehavior extends SimpleBehaviour {
 
-	override def runEpisodes(eGreedyPolicy: EpsilonGreedy, numberOfEpisodes: Int): Unit = {
-		for (_ <- 1 to numberOfEpisodes)
-			_runEpisode(eGreedyPolicy)
+		protected var count: Int = _
+
+		override def onStart(): Unit = count = 0
+
+		override def action(): Unit = { runOneEpisode(eGreedyPolicy); count += 1 }
+
+		override def done(): Boolean = count == numberOfEpisodes
+
 	}
 
-	private def _runEpisode(eGreedyPolicy: EpsilonGreedy): Unit = {
-		Exploration.episode(qMatrix, qFunction, maze, eGreedyPolicy)
+	override def runEpisode(epsilonGreedyPolicy: EpsilonGreedy): Unit = runOneEpisode(epsilonGreedyPolicy)
+
+	override def runEpisodes(epsilonGreedyPolicy: EpsilonGreedy, numberOfEpisodes: Int): Unit = 0 until numberOfEpisodes foreach (_ => runOneEpisode(epsilonGreedyPolicy))
+
+	protected def runOneEpisode(eGreedyPlcy: EpsilonGreedy): Unit = {
+		Exploration.episode(qMatrix, qFunction, maze, eGreedyPlcy)
 		maze.countNewEpisode() // tell the environment that one more episode has been run on it
 	}
 

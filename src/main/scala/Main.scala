@@ -2,7 +2,8 @@ import agent.SingleAgent
 import environment.maze.MazeGridBuilder
 import environment.path.PathLabels
 import examples.maze.Maze5x6
-import learning.QFunction
+import jade.core.ProfileImpl
+import learning.{QFunction, QMatrix}
 import policy.EpsilonGreedy
 import utilities.Analyze
 
@@ -41,27 +42,38 @@ object Main {
 		// initialize q-function and the exploration policy
 		val qFunction = new QFunction(lRate, dFactor)
 		val epsilonGreedy = new EpsilonGreedy(epsilon)
+		val qMatrix = new QMatrix
 
-		val mouse = new SingleAgent(maze, qFunction)
+		val mouseAgent = new SingleAgent(qMatrix, maze, qFunction, epsilonGreedy, n) // init the agent
 
-		mouse.runEpisodes(epsilonGreedy, n)
+		// init the Jade container
+		val runtime = jade.core.Runtime.instance
+		val container = runtime.createMainContainer(new ProfileImpl)
+
+		// create and start simulation
+		val controller = container.acceptNewAgent("mouse", mouseAgent)
+		controller.start()
+
+		Thread.sleep(3000)
+
+		//mouseAgent.runEpisodes(epsilonGreedy, n)
 
 		mazeDir.showMaze()
 
-		//Analyze.printBestPath(mouse.qMatrix, maze)
+		//Analyze.printBestPath(mouseAgent.qMatrix, maze)
 
-		val bestPath = mouse.getBestPathFromStartingState
+		val bestPath = mouseAgent.getBestPathFromStartingState
 		print("Best Path: "); println(bestPath)
 
 		println("\n -- 1 -- ")
 		val path9_1 = new PathLabels(9) -> (4,5) -> (4,4) -> (4,3) -> (4,2) -> (3,2) -> (2,2) -> (2,1) -> (2,0) -> (1,0) -> (0,0)
-		Analyze.printPathStats(mouse.qMatrix, path9_1)
+		Analyze.printPathStats(qMatrix, path9_1)
 		println("\n -- 2 -- ")
 		val path9_2 = new PathLabels(9) -> (4,5) -> (4,4) -> (4,3) -> (3,3) -> (2,3) -> (1,3) -> (1,2) -> (1,1) -> (0,1) -> (0,0)
-		Analyze.printPathStats(mouse.qMatrix, path9_2)
+		Analyze.printPathStats(qMatrix, path9_2)
 		println("\n -- 3 -- ")
 		val path11 = new PathLabels(11) -> (4,5) -> (4,4) -> (4,3) -> (4,2) -> (3,2) -> (2,2) -> (2,3) -> (1,3) -> (1,2) -> (0,2) -> (0,1) -> (0,0)
-		Analyze.printPathStats(mouse.qMatrix, path11)
+		Analyze.printPathStats(qMatrix, path11)
 	}
 
 }

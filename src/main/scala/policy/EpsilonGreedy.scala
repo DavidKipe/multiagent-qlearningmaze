@@ -10,7 +10,7 @@ class EpsilonGreedy(val epsilon: Double) extends ExplorationPolicy {
 
 	require(epsilon > 0.0 && epsilon < 1.0, "Epsilon value must be in interval (0.0, 1.0)")
 
-	protected val random = new Random()
+	protected val random = new Random
 
 	protected var _isLastActionRandom: Boolean = _ // only for printing help
 

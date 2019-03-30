@@ -1,5 +1,7 @@
 package environment.path
 
+import utilities.Utils
+
 import scala.collection.mutable.ArrayBuffer
 
 class PathLabels(val startingSize: Int = 0) extends Iterable[String] { // this class stores a path labels and provides easy methods to build a path labels or iterate it
@@ -9,7 +11,7 @@ class PathLabels(val startingSize: Int = 0) extends Iterable[String] { // this c
 	if (startingSize > 0)
 		labelArray = new ArrayBuffer[(Int, Int)](startingSize + 1)
 	else
-		labelArray = new ArrayBuffer[(Int, Int)]()
+		labelArray = new ArrayBuffer[(Int, Int)]
 
 	def ->(i: Int, j: Int): PathLabels = {
 		labelArray += ((i, j))
@@ -22,7 +24,7 @@ class PathLabels(val startingSize: Int = 0) extends Iterable[String] { // this c
 
 	def intPairIterator: Iterator[(Int, Int)] = labelArray.iterator
 
-	override def iterator: Iterator[String] = labelArray.map(pair => PathLabels.createLabel(pair._1, pair._2)).iterator
+	override def iterator: Iterator[String] = labelArray.map(Utils.coordsToLabel).iterator
 
 	override def toString: String = {
 		val strPath: StringBuilder = new StringBuilder()
@@ -36,11 +38,5 @@ class PathLabels(val startingSize: Int = 0) extends Iterable[String] { // this c
 		}
 		strPath.toString
 	}
-
-}
-
-object PathLabels {
-
-	def createLabel(i: Int, j: Int): String = "(" + i + "," + j + ")"
 
 }

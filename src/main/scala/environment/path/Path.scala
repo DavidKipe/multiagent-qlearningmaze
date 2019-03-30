@@ -12,7 +12,7 @@ class Path(val startingSize: Int = 0) extends Iterable[State] { // this class st
 	if (startingSize > 0)
 		statesArray = new ArrayBuffer[State](startingSize + 1) // plus 1 because there are one more elements than steps
 	else
-		statesArray = new ArrayBuffer[State]()
+		statesArray = new ArrayBuffer[State]
 
 	def this(pathLabels: PathLabels) {
 		this(pathLabels.numberOfStates)

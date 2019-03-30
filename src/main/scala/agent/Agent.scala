@@ -3,7 +3,7 @@ package agent
 import environment.path.Path
 import policy.EpsilonGreedy
 
-trait Agent {
+trait Agent extends jade.core.Agent {
 
 	def runEpisode(eGreedyPolicy: EpsilonGreedy): Unit
 

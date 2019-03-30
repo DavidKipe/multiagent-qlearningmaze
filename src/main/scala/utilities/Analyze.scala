@@ -70,18 +70,18 @@ object Analyze { // this static methods analyze the paths to printing informatio
 
 		println("Path: " + path)
 
-		val pathIterator = path.iterator
-		var fromLabel = pathIterator.next()
+		val pathIterator = path.intPairIterator
+		var fromCoord = pathIterator.next()
 
-		for (label <- pathIterator) {
-			val opt_q = qMatrix.getByLabel(fromLabel, label)
+		for (toCoords <- pathIterator) {
+			val opt_q = qMatrix.getByLabel(fromCoord, toCoords)
 			if (opt_q.isEmpty)
-				throw new NoSuchPathFound((fromLabel, label), "No Q-value found for such action in the given Q-matrix")
+				throw new NoSuchPathFound(fromCoord, toCoords, "No Q-value found for such action in the given Q-matrix")
 
 			val q = opt_q.get
 			qSum += q
 
-			fromLabel = label
+			fromCoord = toCoords
 			print(f" -> $q%.2f")
 		}
 		println()

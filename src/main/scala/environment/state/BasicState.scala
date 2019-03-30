@@ -1,20 +1,18 @@
 package environment.state
 
 import environment.action.Action
+import utilities.Utils
 
 import scala.collection.mutable.ArrayBuffer
 
 
 class BasicState(val coordY: Int, val coordX: Int, protected var actions: Seq[Action]) extends State { // the coordinates are the identifier of a BasicState
 
-	protected var label: String = "(" + coordY + "," + coordX + ")"
+	protected var label: String = Utils.coordsToLabel(coordY, coordX)
 
 	def this(coordY: Int, coordX: Int) = this(coordY, coordX, Array.empty[Action])
 
-	def this(label: String) = {
-		this(-1, -1)
-		this.label = label
-	}
+	def this(coords: (Int, Int)) = this(coords._1, coords._2)
 
 	override private[environment] def setActions(actions: Seq[Action]): Unit = this.actions = actions
 

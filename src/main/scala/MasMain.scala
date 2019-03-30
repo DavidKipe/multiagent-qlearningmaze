@@ -1,9 +1,7 @@
-import agent.SingleAgent
 import environment.maze.MazeGridBuilder
 import examples.maze.Simple4x4
 import learning.QFunction
 import mas.{InitializationMASystem, LearningMazeMAS}
-import policy.EpsilonGreedy
 
 object MasMain {
 
@@ -38,7 +36,7 @@ object MasMain {
 	    println("Time for MAS: " + (t1 - t0)/1e06 + " ms")
 
 		// compare with single agent
-		val agent = new SingleAgent(maze4x4, qFunction)
+		/*val agent = new SingleAgent(maze4x4, qFunction)
 		val epsilonGreedy = new EpsilonGreedy(epsilon)
 
 		t0 = System.nanoTime() // start time
@@ -51,7 +49,7 @@ object MasMain {
 		println("MAS bestpath: " + bestPath)
 		println("SA  bestpath: " + bestPathSA)
 
-		val dummy = 0 // breakpoint
+		val dummy = 0 // breakpoint*/
 	}
 
 }
