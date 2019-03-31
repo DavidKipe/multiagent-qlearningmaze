@@ -51,10 +51,10 @@ object Main {
 		val container = runtime.createMainContainer(new ProfileImpl)
 
 		// create and start simulation
-		val controller = container.acceptNewAgent("mouse", mouseAgent)
-		controller.start()
+		val mouseAgentCtrl = container.acceptNewAgent("mouse", mouseAgent)
+		mouseAgentCtrl.start()
 
-		Thread.sleep(3000)
+		mouseAgent.join() // TODO find a way to wait for the end of computation (join doesn't seem correct)
 
 		//mouseAgent.runEpisodes(epsilonGreedy, n)
 

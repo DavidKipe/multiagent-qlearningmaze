@@ -7,11 +7,11 @@ import learning.{QFunction, QMatrix}
 import policy.EpsilonGreedy
 import utilities.{Analyze, Exploration}
 
-class SingleAgent(val qMatrix: QMatrix, val maze: Environment, val qFunction: QFunction, val eGreedyPolicy: EpsilonGreedy = None.orNull, val numberOfEpisodes: Int = 0) extends Agent {
+class SingleAgent(protected val qMatrix: QMatrix, protected val maze: Environment, val qFunction: QFunction, val eGreedyPolicy: EpsilonGreedy, val numberOfEpisodes: Int = 0) extends Agent {
 
 	override def setup(): Unit = addBehaviour(new RunEpisodesBehavior)
 
-	protected class RunEpisodesBehavior extends SimpleBehaviour {
+	class RunEpisodesBehavior extends SimpleBehaviour {
 
 		protected var count: Int = _
 
@@ -23,9 +23,9 @@ class SingleAgent(val qMatrix: QMatrix, val maze: Environment, val qFunction: QF
 
 	}
 
-	override def runEpisode(epsilonGreedyPolicy: EpsilonGreedy): Unit = runOneEpisode(epsilonGreedyPolicy)
+	override def runEpisode(epsilonGreedyPolicy: EpsilonGreedy = this.eGreedyPolicy): Unit = runOneEpisode(epsilonGreedyPolicy)
 
-	override def runEpisodes(epsilonGreedyPolicy: EpsilonGreedy, numberOfEpisodes: Int): Unit = 0 until numberOfEpisodes foreach (_ => runOneEpisode(epsilonGreedyPolicy))
+	override def runEpisodes(epsilonGreedyPolicy: EpsilonGreedy = this.eGreedyPolicy, numberOfEpisodes: Int): Unit = 0 until numberOfEpisodes foreach (_ => runOneEpisode(epsilonGreedyPolicy))
 
 	protected def runOneEpisode(eGreedyPlcy: EpsilonGreedy): Unit = {
 		Exploration.episode(qMatrix, qFunction, maze, eGreedyPlcy)

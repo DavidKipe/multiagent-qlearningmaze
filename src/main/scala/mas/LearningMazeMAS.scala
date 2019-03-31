@@ -1,14 +1,16 @@
 package mas
 
-import agent.{MASAgent, RunnableAgent}
+import agent.MASAgent
 import environment.EnvironmentPiece
 import environment.path.Path
-import learning.QFunction
+import jade.core.ProfileImpl
+import jade.wrapper.AgentController
+import learning.{QFunction, QMatrix}
 import policy.EpsilonGreedyBounds
 
 import scala.collection.mutable
 
-class LearningMazeMAS(val environmentPieces: Array[Array[EnvironmentPiece]], val qFunction: QFunction) {
+class LearningMazeMAS(val environmentPieces: Array[Array[EnvironmentPiece]], val qFunction: QFunction, val epsilonGreedyValue: Double, val numberOfEpisodesToRun: Int) {
 
 	val gridVertHeight: Int = environmentPieces.length
 	val gridHorizWidth: Int = if (gridVertHeight == 0) 0 else environmentPieces.head.length
@@ -16,7 +18,10 @@ class LearningMazeMAS(val environmentPieces: Array[Array[EnvironmentPiece]], val
 	private val gridOfAgents: Array[Array[MASAgent]] = Array.ofDim(gridVertHeight, gridHorizWidth)
 
 	/* Constructor */
-	forAllGridPositions((posY: Int, posX: Int) => gridOfAgents(posY)(posX) = new MASAgent(environmentPieces(posY)(posX), qFunction, Map.empty[(Int, Int), MASAgent])) // create and initialize all the agents on the grid
+	forAllGridPositions((posY: Int, posX: Int) =>
+		gridOfAgents(posY)(posX) = new MASAgent(new QMatrix, environmentPieces(posY)(posX), qFunction, Map.empty[(Int, Int), MASAgent],
+			new EpsilonGreedyBounds(epsilonGreedyValue, environmentPieces(posY)(posX).getAngleStatesAbsCoords), numberOfEpisodesToRun)
+	) // create and initialize all the agents on the grid
 
 	forAllGridPositions((posY: Int, posX: Int) => { // set all the neighbors for each agent
 			val neighbors: mutable.Map[(Int, Int), MASAgent] = new mutable.HashMap[(Int, Int), MASAgent]()
@@ -33,25 +38,19 @@ class LearningMazeMAS(val environmentPieces: Array[Array[EnvironmentPiece]], val
 		})
 	/*  */
 
-	/* Variables with getters and setters */
-	private var _epsilonGreedyValue: Double = _
-
-	private var _numberOfEpisodesToRun: Int = _
-
-	def epsilonGreedyValue: Double = _epsilonGreedyValue
-
-	def epsilonGreedyValue_=(value: Double): Unit = _epsilonGreedyValue = value
-
-	def numberOfEpisodesToRun: Int = _numberOfEpisodesToRun
-
-	def numberOfEpisodesToRun_=(value: Int): Unit = _numberOfEpisodesToRun = value
-	/*  */
-
 	def startSimulation(): Unit = { // starts the simulation with the current variables
-		require(Option(_epsilonGreedyValue).isDefined, "epsilon greedy policy not defined yet")
-		require(Option(_numberOfEpisodesToRun).isDefined, "the number of episodes to run not defined yet")
+		// init the Jade container
+		val runtime = jade.core.Runtime.instance
+		val container = runtime.createMainContainer(new ProfileImpl)
 
-		val gridOfThreads: Array[Array[Thread]] = Array.ofDim[Thread](gridVertHeight, gridHorizWidth)
+		val gridOfAgentCtrls: Array[Array[AgentController]] = Array.ofDim[AgentController](gridVertHeight, gridHorizWidth)
+
+		// create and initialize all agent controllers
+		forAllGridPositions((posY: Int, posX: Int) => gridOfAgentCtrls(posY)(posX) = container.acceptNewAgent(gridOfAgents(posY)(posX).getStringId, gridOfAgents(posY)(posX)))
+		// start all agents
+		forAllGridPositions((posY: Int, posX: Int) => gridOfAgentCtrls(posY)(posX).start())
+
+		/*val gridOfThreads: Array[Array[Thread]] = Array.ofDim[Thread](gridVertHeight, gridHorizWidth)
 
 		// create and initialize all threads
 		forAllGridPositions((posY: Int, posX: Int) =>
@@ -71,14 +70,10 @@ class LearningMazeMAS(val environmentPieces: Array[Array[EnvironmentPiece]], val
 		// start all threads
 		forAllGridPositions((posY: Int, posX: Int) => gridOfThreads(posY)(posX).start())
 		// waiting for all threads to finish computation
-		forAllGridPositions((posY: Int, posX: Int) => gridOfThreads(posY)(posX).join())
+		forAllGridPositions((posY: Int, posX: Int) => gridOfThreads(posY)(posX).join())*/
 	}
 
-	private def forAllGridPositions(p: (Int, Int) => Unit): Unit = { // run a procedure for each position coordinate in the grid
-		for (posY <- 0 until gridVertHeight)
-			for (posX <- 0 until gridHorizWidth)
-				p(posY, posX)
-	}
+	def waitSimulationToEnd(): Unit = forAllGridPositions((posY: Int, posX: Int) => gridOfAgents(posY)(posX).join()) // waiting for all agents to finish computation
 
 	def generateTheBestPath(): Path = {
 		val bestPath = new Path()
@@ -112,6 +107,12 @@ class LearningMazeMAS(val environmentPieces: Array[Array[EnvironmentPiece]], val
 		} while(nextAgentFound)
 
 		bestPath
+	}
+
+	private def forAllGridPositions(p: (Int, Int) => Unit): Unit = { // run a procedure for each position coordinate in the grid
+		for (posY <- 0 until gridVertHeight)
+			for (posX <- 0 until gridHorizWidth)
+				p(posY, posX)
 	}
 
 }

@@ -5,24 +5,16 @@ import environment.path.Path
 import environment.state.State
 import learning.{QFunction, QMatrix}
 import policy.EpsilonGreedy
-import utilities.Analyze
+import utilities.{Analyze, Utils}
 
-class MASAgent(maze: EnvironmentPiece, qFunction: QFunction, private var neighboringAgents: Map[(Int, Int), MASAgent]) extends SingleAgent(new QMatrix, maze, qFunction, new EpsilonGreedy(.2), 100) with AgentCommunication with AgentNeighborhood {
+class MASAgent(qMatrix: QMatrix, maze: EnvironmentPiece, qFunction: QFunction, protected var neighboringAgents: Map[(Int, Int), MASAgent], eGreedyPolicy: EpsilonGreedy, numberOfEpisodes: Int = 0)
+		extends SingleAgent(qMatrix, maze, qFunction, eGreedyPolicy, numberOfEpisodes) with AgentCommunication with AgentNeighborhood {
 	// TODO adapt for JADE
 	val ((firstY, firstX), (lastY, lastX)) = maze.getAngleStatesAbsCoords // delimiters coordinates of this environment
 	val (envCoordY, envCoordX) = maze.getPieceCoords
 
-	override def runEpisode(eGreedyPolicy: EpsilonGreedy): Unit = {
-		_runEpisode(eGreedyPolicy)
-	}
-
-	override def runEpisodes(eGreedyPolicy: EpsilonGreedy, numberOfEpisodes: Int): Unit = {
-		for (_ <- 1 to numberOfEpisodes)
-			_runEpisode(eGreedyPolicy)
-	}
-
-	private def _runEpisode(eGreedyPolicy: EpsilonGreedy): Unit = {
-		super.runEpisode(eGreedyPolicy)
+	override protected def runOneEpisode(eGreedyPolicy: EpsilonGreedy): Unit = {
+		super.runOneEpisode(eGreedyPolicy)
 
 		val updatingStates: Set[State] = maze.getBorderState // get the border states to update for this environment
 
@@ -83,6 +75,8 @@ class MASAgent(maze: EnvironmentPiece, qFunction: QFunction, private var neighbo
 
 	override def getBestPathFromStartingState: Path = if (envCoordY == 0 && envCoordX == 0) Analyze.getBestPath(qMatrix, maze) else Analyze.getBestPathForEnvPiece(qMatrix, maze)
 
+	def getStringId: String = Utils.coordsToLabel(envCoordY, envCoordX)
+
 
 	def canEqual(other: Any): Boolean = other.isInstanceOf[MASAgent]
 
@@ -98,4 +92,7 @@ class MASAgent(maze: EnvironmentPiece, qFunction: QFunction, private var neighbo
 		val state = Seq(envCoordY, envCoordX)
 		state.map(_.hashCode()).foldLeft(0)((a, b) => 31 * a + b)
 	}
+
+	override def toString: String = getStringId
+
 }
