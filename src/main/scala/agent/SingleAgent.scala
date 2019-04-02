@@ -7,7 +7,7 @@ import learning.{QFunction, QMatrix}
 import policy.EpsilonGreedy
 import utilities.{Analyze, Exploration}
 
-class SingleAgent(protected val qMatrix: QMatrix, protected val maze: Environment, val qFunction: QFunction, val eGreedyPolicy: EpsilonGreedy, val numberOfEpisodes: Int = 0) extends Agent {
+class SingleAgent(protected val qMatrix: QMatrix, protected val maze: Environment, val qFunction: QFunction, val eGreedyPolicy: EpsilonGreedy, var numberOfEpisodes: Int = 0) extends Agent {
 
 	override def setup(): Unit = addBehaviour(new RunEpisodesBehavior)
 
@@ -19,7 +19,7 @@ class SingleAgent(protected val qMatrix: QMatrix, protected val maze: Environmen
 
 		override def action(): Unit = { runOneEpisode(eGreedyPolicy); count += 1 }
 
-		override def done(): Boolean = count == numberOfEpisodes
+		override def done(): Boolean = count >= numberOfEpisodes
 
 	}
 

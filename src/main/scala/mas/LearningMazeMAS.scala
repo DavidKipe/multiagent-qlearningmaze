@@ -1,6 +1,6 @@
 package mas
 
-import agent.MASAgent
+import agent.{MASAgent, RunnableAgent}
 import environment.EnvironmentPiece
 import environment.path.Path
 import jade.core.ProfileImpl
@@ -49,8 +49,10 @@ class LearningMazeMAS(val environmentPieces: Array[Array[EnvironmentPiece]], val
 		forAllGridPositions((posY: Int, posX: Int) => gridOfAgentCtrls(posY)(posX) = container.acceptNewAgent(gridOfAgents(posY)(posX).getStringId, gridOfAgents(posY)(posX)))
 		// start all agents
 		forAllGridPositions((posY: Int, posX: Int) => gridOfAgentCtrls(posY)(posX).start())
+	}
 
-		/*val gridOfThreads: Array[Array[Thread]] = Array.ofDim[Thread](gridVertHeight, gridHorizWidth)
+	def startSimulationWithThreads(): Unit = {
+		val gridOfThreads: Array[Array[Thread]] = Array.ofDim[Thread](gridVertHeight, gridHorizWidth)
 
 		// create and initialize all threads
 		forAllGridPositions((posY: Int, posX: Int) =>
@@ -70,7 +72,7 @@ class LearningMazeMAS(val environmentPieces: Array[Array[EnvironmentPiece]], val
 		// start all threads
 		forAllGridPositions((posY: Int, posX: Int) => gridOfThreads(posY)(posX).start())
 		// waiting for all threads to finish computation
-		forAllGridPositions((posY: Int, posX: Int) => gridOfThreads(posY)(posX).join())*/
+		forAllGridPositions((posY: Int, posX: Int) => gridOfThreads(posY)(posX).join())
 	}
 
 	def waitSimulationToEnd(): Unit = forAllGridPositions((posY: Int, posX: Int) => gridOfAgents(posY)(posX).join()) // waiting for all agents to finish computation

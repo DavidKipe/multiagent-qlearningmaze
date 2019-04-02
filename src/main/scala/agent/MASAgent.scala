@@ -9,7 +9,7 @@ import utilities.{Analyze, Utils}
 
 class MASAgent(qMatrix: QMatrix, maze: EnvironmentPiece, qFunction: QFunction, protected var neighboringAgents: Map[(Int, Int), MASAgent], eGreedyPolicy: EpsilonGreedy, numberOfEpisodes: Int = 0)
 		extends SingleAgent(qMatrix, maze, qFunction, eGreedyPolicy, numberOfEpisodes) with AgentCommunication with AgentNeighborhood {
-	// TODO adapt for JADE
+
 	val ((firstY, firstX), (lastY, lastX)) = maze.getAngleStatesAbsCoords // delimiters coordinates of this environment
 	val (envCoordY, envCoordX) = maze.getPieceCoords
 
@@ -25,6 +25,14 @@ class MASAgent(qMatrix: QMatrix, maze: EnvironmentPiece, qFunction: QFunction, p
 			val sendTo = (coordY: Int, coordX: Int) => {
 				val neighborOpt = neighboringAgents get(coordY, coordX)
 				if (neighborOpt.isDefined) neighborOpt.get.updateQValue(updatingState, maxActionValue)
+				/* draft code for sending message
+				import jade.lang.acl.ACLMessage
+				val msg = new ACLMessage(ACLMessage.INFORM)
+				msg.setContent("I sell seashells at $10/kg")
+				msg.addReceiver(neighborOpt.get.getAID)
+				msg.setContentObject((updatingState, maxActionValue))
+				send(msg)
+				*/
 			}
 
 			if (x == firstX)
@@ -43,22 +51,17 @@ class MASAgent(qMatrix: QMatrix, maze: EnvironmentPiece, qFunction: QFunction, p
 		* */
 	}
 
-	override def updateQValue(toState: State, maxValueAction: Double): Unit = { // TODO must be an async method
+	override def updateQValue(toState: State, maxValueAction: Double): Unit = synchronized {
 		// this procedure receive the max value action for the given state in another environment and calculate the new q-value for this environment
 
-		for (s <- maze.getBorderState) {
-			val optAction = s.getActionTo(toState)
+		for (s <- maze.getBorderState) { // get all states in the border
+			val optAction = s.getActionTo(toState) // get the action to the given state if exists
 
-			if (optAction.isDefined) {
+			if (optAction.isDefined) { // if exists  calculate the new value q-value and put it inside the q-matrix
 				val newValue = qFunction.valueGivenMaxFutureAction(qMatrix, maxValueAction, s, optAction.get)
 				qMatrix.put(s, toState, newValue)
 			}
 		}
-		/*
-		*  check if state is a valid state for me, otherwise discard (could be simply checking if the state is not part of my environment piece)
-		*  get all my states that can reach the given state (must be 2 or 3)
-		*  for each state put into the qMatrix the given value for the transition
-		* */
 	}
 
 	override def getNeighboringAgents: Iterable[MASAgent] = neighboringAgents.values
