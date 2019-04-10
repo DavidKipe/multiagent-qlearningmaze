@@ -17,7 +17,7 @@ class SingleAgent(protected val qMatrix: QMatrix, protected val maze: Environmen
 
 		override def onStart(): Unit = count = 0
 
-		override def action(): Unit = { runOneEpisode(eGreedyPolicy); count += 1 }
+		override def action(): Unit = { runOneEpisode(eGreedyPolicy, isLaunchedFromBehaviour = true); count += 1 }
 
 		override def done(): Boolean = count >= numberOfEpisodes
 
@@ -25,9 +25,9 @@ class SingleAgent(protected val qMatrix: QMatrix, protected val maze: Environmen
 
 	override def runEpisode(epsilonGreedyPolicy: EpsilonGreedy = this.eGreedyPolicy): Unit = runOneEpisode(epsilonGreedyPolicy)
 
-	override def runEpisodes(epsilonGreedyPolicy: EpsilonGreedy = this.eGreedyPolicy, numberOfEpisodes: Int): Unit = 0 until numberOfEpisodes foreach (_ => runOneEpisode(epsilonGreedyPolicy))
+	override def runEpisodes(epsilonGreedyPolicy: EpsilonGreedy = this.eGreedyPolicy, numberOfEpisodes: Int): Unit = for (_ <- 0 until numberOfEpisodes) runOneEpisode(epsilonGreedyPolicy)
 
-	protected def runOneEpisode(eGreedyPlcy: EpsilonGreedy): Unit = {
+	protected def runOneEpisode(eGreedyPlcy: EpsilonGreedy, isLaunchedFromBehaviour: Boolean = false): Unit = {
 		Exploration.episode(qMatrix, qFunction, maze, eGreedyPlcy)
 		maze.countNewEpisode() // tell the environment that one more episode has been run on it
 	}

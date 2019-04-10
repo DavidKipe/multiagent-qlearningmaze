@@ -38,7 +38,7 @@ class LearningMazeMAS(val environmentPieces: Array[Array[EnvironmentPiece]], val
 		})
 	/*  */
 
-	def startSimulation(): Unit = { // starts the simulation with the current variables
+	def startSimulation(): Unit = { // starts the simulation with Jade
 		// init the Jade container
 		val runtime = jade.core.Runtime.instance
 		val container = runtime.createMainContainer(new ProfileImpl)
@@ -51,7 +51,7 @@ class LearningMazeMAS(val environmentPieces: Array[Array[EnvironmentPiece]], val
 		forAllGridPositions((posY: Int, posX: Int) => gridOfAgentCtrls(posY)(posX).start())
 	}
 
-	def startSimulationWithThreads(): Unit = {
+	def startSimulationWithThreads(): Unit = { // start simulation with Java threads
 		val gridOfThreads: Array[Array[Thread]] = Array.ofDim[Thread](gridVertHeight, gridHorizWidth)
 
 		// create and initialize all threads

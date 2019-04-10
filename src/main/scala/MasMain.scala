@@ -25,8 +25,9 @@ object MasMain {
 		val mas = new LearningMazeMAS(pieces, qFunction, epsilon, n)
 
 		var t0 = System.nanoTime() // start time
-		mas.startSimulationWithThreads()
-		//mas.waitSimulationToEnd()
+		//mas.startSimulationWithThreads()
+		mas.startSimulation()
+		mas.waitSimulationToEnd()
 		val bestPath = mas.generateTheBestPath()
 	    var t1 = System.nanoTime() // end time
 	    println("Time for MAS: " + (t1 - t0)/1e06 + " ms")
