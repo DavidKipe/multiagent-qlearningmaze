@@ -74,7 +74,7 @@ object Analyze { // this static methods analyze the paths to printing informatio
 		var fromCoord = pathIterator.next()
 
 		for (toCoords <- pathIterator) {
-			val opt_q = qMatrix.getByLabel(fromCoord, toCoords)
+			val opt_q = qMatrix.getByCoords(fromCoord, toCoords)
 			if (opt_q.isEmpty)
 				throw new NoSuchPathFound(fromCoord, toCoords, "No Q-value found for such action in the given Q-matrix")
 

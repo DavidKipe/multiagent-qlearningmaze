@@ -13,7 +13,7 @@ class MASAgent(qMatrix: QMatrix, maze: EnvironmentPiece, qFunction: QFunction, p
 	val ((firstY, firstX), (lastY, lastX)) = maze.getAngleStatesAbsCoords // delimiters coordinates of this environment
 	val (envCoordY, envCoordX) = maze.getPieceCoords
 
-	import jade.core.behaviours.CyclicBehaviour
+	import jade.core.behaviours.CyclicBehaviour //TODO improve code for send/recv msg
 
 	override def setup(): Unit = {
 		super.setup()
@@ -22,8 +22,12 @@ class MASAgent(qMatrix: QMatrix, maze: EnvironmentPiece, qFunction: QFunction, p
 				val msg = receive
 				if (msg != null) {
 					System.out.println(" - " + myAgent.getLocalName + " <- " + msg.getContent)
-					val s =  new BasicState(msg.getContent.charAt(1).asDigit, msg.getContent.charAt(3).asDigit)
-					updateQValue(s, msg.getContent.substring(8).toDouble)
+
+					val splitStrArr = msg.getContent.split('=')
+					val (toStateLabel, maxActionValue) = (splitStrArr(0), splitStrArr(1))
+
+					val s =  new BasicState(Utils.labelToCoords(toStateLabel))
+					updateQValue(s, maxActionValue.toDouble)
 				}
 				block()
 			}
@@ -63,8 +67,7 @@ class MASAgent(qMatrix: QMatrix, maze: EnvironmentPiece, qFunction: QFunction, p
 				import jade.lang.acl.ACLMessage
 				val msg = new ACLMessage(ACLMessage.INFORM)
 				msg.addReceiver(neighborOpt.get.getAID)
-				//msg.setContentObject((toState, maxActionValue))
-				msg.setContent(toState.getLabel + " = " + maxActionValue)
+				msg.setContent(toState.getLabel + "=" + maxActionValue)
 				send(msg)
 			}
 			else
@@ -72,9 +75,8 @@ class MASAgent(qMatrix: QMatrix, maze: EnvironmentPiece, qFunction: QFunction, p
 
 	}
 
+	// this procedure receive the max value action for the given state in another environment and calculate the new q-value for this environment
 	override def updateQValue(toState: State, maxValueAction: Double): Unit = synchronized {
-		// this procedure receive the max value action for the given state in another environment and calculate the new q-value for this environment
-
 		for (s <- maze.getBorderState) { // get all states in the border
 			val optAction = s.getActionTo(toState) // get the action to the given state if exists
 
