@@ -14,10 +14,12 @@ trait EnvironmentPiece extends Environment {
 
 	def getBorderState: Set[State]
 
-	def getAllFinalStates: Set[State]
+	def getAllPossibleFinalStates: Set[State]
 
 	def getFinalStatesForLastEpisode: Set[State]
 
 	def isPartOfThisEnvPiece(state: State): Boolean
+
+	def countNewEpisode(): Unit
 
 }

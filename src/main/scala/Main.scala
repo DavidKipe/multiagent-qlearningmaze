@@ -1,4 +1,4 @@
-import agent.SingleAgent
+import agent.BaseAgent
 import environment.maze.MazeGridBuilder
 import environment.path.PathLabels
 import examples.maze.Maze5x6
@@ -44,7 +44,7 @@ object Main {
 		val epsilonGreedy = new EpsilonGreedy(epsilon)
 		val qMatrix = new QMatrix
 
-		val mouseAgent = new SingleAgent(qMatrix, maze, qFunction, epsilonGreedy, n) // init the agent
+		val mouseAgent = new BaseAgent(qMatrix, maze, qFunction, epsilonGreedy, n) // init the agent
 
 		// init the Jade container
 		val runtime = jade.core.Runtime.instance

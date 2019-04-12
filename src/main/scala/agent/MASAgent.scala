@@ -3,39 +3,43 @@ package agent
 import environment.EnvironmentPiece
 import environment.path.Path
 import environment.state.{BasicState, State}
+import jade.core.behaviours.CyclicBehaviour
+import jade.lang.acl.ACLMessage
 import learning.{QFunction, QMatrix}
 import policy.EpsilonGreedy
 import utilities.{Analyze, Utils}
 
 class MASAgent(qMatrix: QMatrix, maze: EnvironmentPiece, qFunction: QFunction, protected var neighboringAgents: Map[(Int, Int), MASAgent], eGreedyPolicy: EpsilonGreedy, numberOfEpisodes: Int = 0)
-		extends SingleAgent(qMatrix, maze, qFunction, eGreedyPolicy, numberOfEpisodes) with AgentCommunication with AgentNeighborhood {
+		extends BaseAgent(qMatrix, maze, qFunction, eGreedyPolicy, numberOfEpisodes) with AgentCommunication with AgentNeighborhood {
 
 	val ((firstY, firstX), (lastY, lastX)) = maze.getAngleStatesAbsCoords // delimiters coordinates of this environment
 	val (envCoordY, envCoordX) = maze.getPieceCoords
 
-	import jade.core.behaviours.CyclicBehaviour //TODO improve code for send/recv msg
+	class RecvQValueBehaviour extends CyclicBehaviour {
+
+		override def action(): Unit = {
+			val msg = receive
+			if (Option(msg).isDefined) {
+				System.out.println(" - " + myAgent.getLocalName + " <- " + msg.getContent)
+
+				val splitStrArr = msg.getContent.split('=')
+				val (toStateLabel, maxActionValue) = (splitStrArr(0), splitStrArr(1))
+
+				val s =  new BasicState(Utils.labelToCoords(toStateLabel))
+				updateQValue(s, maxActionValue.toDouble)
+			}
+			block()
+		}
+	}
 
 	override def setup(): Unit = {
 		super.setup()
-		addBehaviour(new CyclicBehaviour(this) {
-			override def action(): Unit = {
-				val msg = receive
-				if (msg != null) {
-					System.out.println(" - " + myAgent.getLocalName + " <- " + msg.getContent)
-
-					val splitStrArr = msg.getContent.split('=')
-					val (toStateLabel, maxActionValue) = (splitStrArr(0), splitStrArr(1))
-
-					val s =  new BasicState(Utils.labelToCoords(toStateLabel))
-					updateQValue(s, maxActionValue.toDouble)
-				}
-				block()
-			}
-		})
+		addBehaviour(new RecvQValueBehaviour)
 	}
 
 	override protected def runOneEpisode(eGreedyPolicy: EpsilonGreedy, isLaunchedFromBehaviour: Boolean = false): Unit = {
 		super.runOneEpisode(eGreedyPolicy, isLaunchedFromBehaviour)
+		maze.countNewEpisode() // tell the environment that one more episode has been run on it (needs for final states rotation)
 
 		val updatingStates = maze.getBorderState // get the border states to update for this environment piece
 
@@ -63,8 +67,6 @@ class MASAgent(qMatrix: QMatrix, maze: EnvironmentPiece, qFunction: QFunction, p
 
 		if (neighborOpt.isDefined)
 			if (withJadeMessage) {
-				//draft code for sending message
-				import jade.lang.acl.ACLMessage
 				val msg = new ACLMessage(ACLMessage.INFORM)
 				msg.addReceiver(neighborOpt.get.getAID)
 				msg.setContent(toState.getLabel + "=" + maxActionValue)
@@ -72,11 +74,10 @@ class MASAgent(qMatrix: QMatrix, maze: EnvironmentPiece, qFunction: QFunction, p
 			}
 			else
 				neighborOpt.get.updateQValue(toState, maxActionValue)
-
 	}
 
 	// this procedure receive the max value action for the given state in another environment and calculate the new q-value for this environment
-	override def updateQValue(toState: State, maxValueAction: Double): Unit = synchronized {
+	override def updateQValue(toState: State, maxValueAction: Double): Unit = this.synchronized {
 		for (s <- maze.getBorderState) { // get all states in the border
 			val optAction = s.getActionTo(toState) // get the action to the given state if exists
 

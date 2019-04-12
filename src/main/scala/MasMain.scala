@@ -1,3 +1,4 @@
+import agent.TerminationControl
 import environment.maze.MazeGridBuilder
 import examples.maze.Simple4x4
 import learning.QFunction
@@ -26,8 +27,9 @@ object MasMain {
 
 		var t0 = System.nanoTime() // start time
 		//mas.startSimulationWithThreads()
+		TerminationControl.getInstance.setEndCallBack(() => print("AGENT DONE!!!"))
 		mas.startSimulation()
-		mas.waitSimulationToEnd()
+		//mas.waitSimulationToEnd()
 		val bestPath = mas.generateTheBestPath()
 	    var t1 = System.nanoTime() // end time
 	    println("Time for MAS: " + (t1 - t0)/1e06 + " ms")

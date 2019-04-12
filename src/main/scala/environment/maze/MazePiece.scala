@@ -83,7 +83,7 @@ class MazePiece(grid: Array[Array[State]], val coordY: Int, val coordX: Int) ext
 			return bStates.toSet
 		}
 
-		getAllFinalStates // otherwise is simply all the final states
+		getAllPossibleFinalStates // otherwise is simply all the final states
 	}
 
 	override def setStartingState(state: State): Unit = mostValuableStartingState = state
@@ -101,15 +101,14 @@ class MazePiece(grid: Array[Array[State]], val coordY: Int, val coordX: Int) ext
 
 	override def countNewEpisode(): Unit = _numberOfEpisodesRun += 1
 
-	override def numberOfEpisodesRun: Int = _numberOfEpisodesRun
+	def numberOfEpisodesRun: Int = _numberOfEpisodesRun
 
 	override def getBorderState: Set[State] = borderStates
 
-	override def getAllFinalStates: Set[State] = finalStatesSets.flatten.toSet
+	override def getAllPossibleFinalStates: Set[State] = finalStatesSets.flatten.toSet
 
 	override def getFinalStatesForLastEpisode: Set[State] = finalStatesSets(_numberOfEpisodesRun % finalStatesSets.length)
 
 	override def isPartOfThisEnvPiece(state: State): Boolean = state.isInsideBoundaries(angleStatesAbsCoords)
 
-	def printGoalStates(): Unit = println(finalStatesSets(_numberOfEpisodesRun % finalStatesSets.length)) // debug print function
 }
