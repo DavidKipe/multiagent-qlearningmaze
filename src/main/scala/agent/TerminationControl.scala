@@ -10,36 +10,42 @@ object TerminationControl {
 
 class TerminationControl private() {
 
-	private var endCallBack: () => Unit = () => Unit
+	private var endCallBack: Unit => Unit = _
 
-	private var numberAgentRunning: Int = 0
+	private var numberOfAgents: Int = 0
 
 	private var started: Boolean = false
 	private var end: Boolean = false
+	private var callbackSetUp = false
 
 
-	def setEndCallBack(endingCallBack: () => Unit) : Unit = this.endCallBack = endingCallBack
-
-	def addAgent(): Unit = this.synchronized {
-		if (end) // throw exception if trying to add agent after end
-			throw new RuntimeException
-
-		numberAgentRunning += 1
+	def setEndCallBack(endCallBack: Unit => Unit) : Unit = {
+		this.endCallBack = endCallBack
+		this.callbackSetUp = true
 	}
 
-	def warnStarting(): Unit = this.synchronized {
-		started = true
+	def setNumberOfAgents(numberOfAgents: Int): Unit = this.synchronized {
+		require(!started, "The number of agents is already set up")
+		require(numberOfAgents >= 0, "The number of agents in the simulation should be positive")
+
+		this.numberOfAgents += numberOfAgents
+		this.started = true
 	}
 
 	def agentDone(): Unit = this.synchronized {
-		if (end) // throw exception if trying to warn an agent as done after end
-			throw new RuntimeException
+		if (end) // if trying to warn an agent as done after end, nothing will be done
+			return
 
-		numberAgentRunning -= 1
+		numberOfAgents -= 1
 
-		if (started && numberAgentRunning <= 0) {
+		triggerIfAllDone()
+	}
+
+	def triggerIfAllDone(): Unit = this.synchronized {
+		if (started && !end && callbackSetUp && numberOfAgents <= 0) {
 			endCallBack()
 			end = true
 		}
 	}
+
 }

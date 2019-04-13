@@ -10,19 +10,13 @@ import utilities.{Analyze, Exploration}
 // single agent
 class BaseAgent(protected val qMatrix: QMatrix, protected val maze: Environment, val qFunction: QFunction, val eGreedyPolicy: EpsilonGreedy, var numberOfEpisodes: Int = 0) extends Agent {
 
-	override def setup(): Unit = {
-		addBehaviour(new RunEpisodesBehavior)
-		TerminationControl.getInstance.addAgent()
-	}
+	override def setup(): Unit = addBehaviour(new RunEpisodesBehavior)
 
 	class RunEpisodesBehavior extends SimpleBehaviour {
 
 		protected var count: Int = _
 
-		override def onStart(): Unit = {
-			count = 0
-			TerminationControl.getInstance.warnStarting()
-		}
+		override def onStart(): Unit = count = 0
 
 		override def action(): Unit = {
 			runOneEpisode(eGreedyPolicy, isLaunchedFromBehaviour = true)

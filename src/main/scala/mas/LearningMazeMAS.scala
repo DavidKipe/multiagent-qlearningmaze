@@ -1,6 +1,6 @@
 package mas
 
-import agent.{MASAgent, RunnableAgent}
+import agent.{MASAgent, RunnableAgent, TerminationControl}
 import environment.EnvironmentPiece
 import environment.path.Path
 import jade.core.ProfileImpl
@@ -47,6 +47,8 @@ class LearningMazeMAS(val environmentPieces: Array[Array[EnvironmentPiece]], val
 
 		// create and initialize all agent controllers
 		forAllGridPositions((posY: Int, posX: Int) => gridOfAgentCtrls(posY)(posX) = container.acceptNewAgent(gridOfAgents(posY)(posX).getStringId, gridOfAgents(posY)(posX)))
+		// set the termination control
+		TerminationControl.getInstance.setNumberOfAgents(gridHorizWidth * gridVertHeight)
 		// start all agents
 		forAllGridPositions((posY: Int, posX: Int) => gridOfAgentCtrls(posY)(posX).start())
 	}

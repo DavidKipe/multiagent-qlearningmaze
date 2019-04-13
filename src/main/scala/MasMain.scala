@@ -27,10 +27,9 @@ object MasMain {
 
 		var t0 = System.nanoTime() // start time
 		//mas.startSimulationWithThreads()
-		TerminationControl.getInstance.setEndCallBack(() => print("AGENT DONE!!!"))
+		TerminationControl.getInstance.setEndCallBack(_ => result(mas))
 		mas.startSimulation()
-		//mas.waitSimulationToEnd()
-		val bestPath = mas.generateTheBestPath()
+
 	    var t1 = System.nanoTime() // end time
 	    println("Time for MAS: " + (t1 - t0)/1e06 + " ms")
 
@@ -44,11 +43,17 @@ object MasMain {
 		t1 = System.nanoTime() // end time
 		println("Time for SA: " + (t1 - t0)/1e06 + " ms")*/
 
-		Simple4x4.showMaze()
-		println("MAS bestpath: " + bestPath)
+		//Simple4x4.showMaze()
+		//println("MAS bestpath: " + bestPath)
 		//println("SA  bestpath: " + bestPathSA)
 
 		val dummy = 0 // breakpoint
+	}
+
+	private def result(mas: LearningMazeMAS): Unit = {
+		val bestPath = mas.generateTheBestPath()
+		Simple4x4.showMaze()
+		println("MAS bestpath: " + bestPath)
 	}
 
 }
