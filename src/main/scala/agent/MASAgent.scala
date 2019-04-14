@@ -27,7 +27,6 @@ class MASAgent(qMatrix: QMatrix, maze: EnvironmentPiece, qFunction: QFunction, p
 				val s =  new BasicState(Utils.labelToCoords(toStateLabel))
 				updateQValue(s, maxActionValue.toDouble)
 			}
-			block()
 		}
 	}
 
@@ -77,6 +76,9 @@ class MASAgent(qMatrix: QMatrix, maze: EnvironmentPiece, qFunction: QFunction, p
 
 	// this procedure receive the max value action for the given state in another environment and calculate the new q-value for this environment
 	override def updateQValue(toState: State, maxValueAction: Double): Unit = this.synchronized {
+		MASAgent.count += 1
+		println("count: " + MASAgent.count) // TODO possible issue, the agents terminate early, thus many updates of q-value occur after and don't take effect
+
 		for (s <- maze.getBorderState) { // get all states in the border
 			val optAction = s.getActionTo(toState) // get the action to the given state if exists
 
@@ -121,4 +123,8 @@ class MASAgent(qMatrix: QMatrix, maze: EnvironmentPiece, qFunction: QFunction, p
 
 	override def toString: String = getStringId
 
+}
+
+object MASAgent {
+	var count = 0
 }

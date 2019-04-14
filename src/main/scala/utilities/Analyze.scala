@@ -24,6 +24,7 @@ object Analyze { // this static methods analyze the paths to printing informatio
 		path -> currState
 
 		do {
+			println(currState)
 			val selected_a: Action = policy.nextAction(currState, qMatrix)
 			currState = selected_a.act.newState
 

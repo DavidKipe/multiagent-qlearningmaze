@@ -3,8 +3,6 @@ package environment.state
 import environment.action.Action
 import utilities.Utils
 
-import scala.collection.mutable.ArrayBuffer
-
 
 class BasicState(val coordY: Int, val coordX: Int, protected var actions: Seq[Action]) extends State { // the coordinates are the identifier of a BasicState
 
@@ -18,15 +16,7 @@ class BasicState(val coordY: Int, val coordX: Int, protected var actions: Seq[Ac
 
 	override def getActions: Seq[Action] = actions
 
-	override def getActions(anglesBoundaries: ((Int, Int), (Int, Int))): Seq[Action] = {
-		val resActions = ArrayBuffer[Action]()
-
-		for (action <- actions)
-			if (action.act.newState.isInsideBoundaries(anglesBoundaries))
-				resActions.append(action)
-
-		resActions
-	}
+	override def getActions(anglesBoundaries: ((Int, Int), (Int, Int))): Seq[Action] = actions.filter(a => a.act.newState.isInsideBoundaries(anglesBoundaries))
 
 	override def isInsideBoundaries(anglesBoundaries: ((Int, Int), (Int, Int))): Boolean = {
 		val ((firstY, firstX), (lastY, lastX)) = anglesBoundaries

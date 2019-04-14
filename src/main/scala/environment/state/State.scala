@@ -6,9 +6,9 @@ trait State {
 
 	private[environment] def setActions(actions: Seq[Action]): Unit
 
-	def getActions: Seq[Action]
+	def getActions: Seq[Action] // return the best action
 
-	def getActions(anglesBoundaries: ((Int, Int), (Int, Int))): Seq[Action]
+	def getActions(anglesBoundaries: ((Int, Int), (Int, Int))): Seq[Action] // returns the best action inside the boundaries
 
 	def hasActionTo(state: State): Boolean
 

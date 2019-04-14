@@ -1,6 +1,6 @@
 import agent.TerminationControl
 import environment.maze.MazeGridBuilder
-import examples.maze.Simple4x4
+import examples.maze.MASMaze8x8
 import learning.QFunction
 import mas.{InitializationMASystem, LearningMazeMAS}
 
@@ -9,12 +9,12 @@ object MasMain {
 	/* parameters for the q-function */
 	val lRate = .8      // learning rate
 
-	val dFactor = .8    // discount factor
+	val dFactor = .9    // discount factor
 	/*  */
 
-	val epsilon = .2    // the percentage of random actions taken for the e-greedy exploration policy
+	val epsilon = .4    // the percentage of random actions taken for the e-greedy exploration policy
 
-	val n = 1000
+	val n = 2000
 
 
 	private var tStart: Long = _
@@ -22,10 +22,13 @@ object MasMain {
 
 	def main(args: Array[String]): Unit = {
 		val qFunction = new QFunction(lRate, dFactor)
-		val maze4x4 = Simple4x4.construct(MazeGridBuilder.WEAK_REWARD)
 
-		println(maze4x4)
-		val pieces = InitializationMASystem.splitEnvironment(maze4x4,2,2)
+		//val maze4x4 = Simple4x4.construct(MazeGridBuilder.WEAK_REWARD)
+		val maze8x8 = MASMaze8x8.construct(MazeGridBuilder.WEAK_REWARD)
+
+		//println(maze4x4)
+		//val pieces = InitializationMASystem.splitEnvironment(maze4x4,2,2)
+		val pieces = InitializationMASystem.splitEnvironment(maze8x8, 2, 2)
 		val mas = new LearningMazeMAS(pieces, qFunction, epsilon, n)
 
 		tStart = System.nanoTime() // start time
@@ -54,7 +57,7 @@ object MasMain {
 		tEnd = System.nanoTime()
 		println("SIMULATION ENDED in: " + (tEnd - tStart)/1e06 + " ms")
 		val bestPath = mas.generateTheBestPath()
-		Simple4x4.showMaze()
+		//Simple4x4.showMaze()
 		println("MAS bestpath: " + bestPath)
 	}
 
