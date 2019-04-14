@@ -2,7 +2,6 @@ import agent.BaseAgent
 import environment.maze.MazeGridBuilder
 import environment.path.PathLabels
 import examples.maze.Maze5x6
-import jade.core.ProfileImpl
 import learning.{QFunction, QMatrix}
 import policy.EpsilonGreedy
 import utilities.Analyze
@@ -47,16 +46,14 @@ object Main {
 		val mouseAgent = new BaseAgent(qMatrix, maze, qFunction, epsilonGreedy, n) // init the agent
 
 		// init the Jade container
-		val runtime = jade.core.Runtime.instance
-		val container = runtime.createMainContainer(new ProfileImpl)
+		//val runtime = jade.core.Runtime.instance
+		//val container = runtime.createMainContainer(new ProfileImpl)
 
 		// create and start simulation
-		val mouseAgentCtrl = container.acceptNewAgent("mouse", mouseAgent)
-		mouseAgentCtrl.start()
+		//val mouseAgentCtrl = container.acceptNewAgent("mouse", mouseAgent)
+		//mouseAgentCtrl.start()
 
-		mouseAgent.join() // TODO find a way to wait for the end of computation (join doesn't seem correct)
-
-		//mouseAgent.runEpisodes(epsilonGreedy, n)
+		mouseAgent.runEpisodes(epsilonGreedy, n)
 
 		mazeDir.showMaze()
 

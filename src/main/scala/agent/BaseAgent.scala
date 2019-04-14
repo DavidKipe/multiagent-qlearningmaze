@@ -25,7 +25,7 @@ class BaseAgent(protected val qMatrix: QMatrix, protected val maze: Environment,
 
 		override def done(): Boolean = {
 			val done = count >= numberOfEpisodes
-			if (done) TerminationControl.getInstance.agentDone()
+			if (done) TerminationControl.agentDone()
 			done
 		}
 	}

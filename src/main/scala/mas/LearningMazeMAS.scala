@@ -48,7 +48,7 @@ class LearningMazeMAS(val environmentPieces: Array[Array[EnvironmentPiece]], val
 		// create and initialize all agent controllers
 		forAllGridPositions((posY: Int, posX: Int) => gridOfAgentCtrls(posY)(posX) = container.acceptNewAgent(gridOfAgents(posY)(posX).getStringId, gridOfAgents(posY)(posX)))
 		// set the termination control
-		TerminationControl.getInstance.setNumberOfAgents(gridHorizWidth * gridVertHeight)
+		TerminationControl.setNumberOfAgents(gridHorizWidth * gridVertHeight)
 		// start all agents
 		forAllGridPositions((posY: Int, posX: Int) => gridOfAgentCtrls(posY)(posX).start())
 	}
@@ -76,8 +76,6 @@ class LearningMazeMAS(val environmentPieces: Array[Array[EnvironmentPiece]], val
 		// waiting for all threads to finish computation
 		forAllGridPositions((posY: Int, posX: Int) => gridOfThreads(posY)(posX).join())
 	}
-
-	def waitSimulationToEnd(): Unit = forAllGridPositions((posY: Int, posX: Int) => gridOfAgents(posY)(posX).join()) // waiting for all agents to finish computation
 
 	def generateTheBestPath(): Path = {
 		val bestPath = new Path()

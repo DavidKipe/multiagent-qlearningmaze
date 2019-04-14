@@ -20,8 +20,7 @@ class MASAgent(qMatrix: QMatrix, maze: EnvironmentPiece, qFunction: QFunction, p
 		override def action(): Unit = {
 			val msg = receive
 			if (Option(msg).isDefined) {
-				System.out.println(" - " + myAgent.getLocalName + " <- " + msg.getContent)
-
+				//System.out.println(" - " + myAgent.getLocalName + " <- " + msg.getContent)
 				val splitStrArr = msg.getContent.split('=')
 				val (toStateLabel, maxActionValue) = (splitStrArr(0), splitStrArr(1))
 
@@ -82,7 +81,7 @@ class MASAgent(qMatrix: QMatrix, maze: EnvironmentPiece, qFunction: QFunction, p
 			val optAction = s.getActionTo(toState) // get the action to the given state if exists
 
 			if (optAction.isDefined) { // if exists  calculate the new value q-value and put it inside the q-matrix
-				val newValue = qFunction.valueGivenMaxFutureAction(qMatrix, maxValueAction, s, optAction.get)
+				val newValue = qFunction.value(qMatrix, s, optAction.get.act, Some(maxValueAction))
 				qMatrix.put(s, toState, newValue)
 			}
 		}

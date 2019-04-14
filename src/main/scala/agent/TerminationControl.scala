@@ -2,14 +2,6 @@ package agent
 
 object TerminationControl {
 
-	private val ourInstance = new TerminationControl
-
-	def getInstance: TerminationControl = ourInstance
-
-}
-
-class TerminationControl private() {
-
 	private var endCallBack: Unit => Unit = _
 
 	private var numberOfAgents: Int = 0
@@ -24,7 +16,7 @@ class TerminationControl private() {
 		this.callbackSetUp = true
 	}
 
-	def setNumberOfAgents(numberOfAgents: Int): Unit = this.synchronized {
+	def setNumberOfAgents(numberOfAgents: Int): Unit = TerminationControl.synchronized {
 		require(!started, "The number of agents is already set up")
 		require(numberOfAgents >= 0, "The number of agents in the simulation should be positive")
 
@@ -32,7 +24,7 @@ class TerminationControl private() {
 		this.started = true
 	}
 
-	def agentDone(): Unit = this.synchronized {
+	def agentDone(): Unit = TerminationControl.synchronized {
 		if (end) // if trying to warn an agent as done after end, nothing will be done
 			return
 
@@ -41,7 +33,7 @@ class TerminationControl private() {
 		triggerIfAllDone()
 	}
 
-	def triggerIfAllDone(): Unit = this.synchronized {
+	def triggerIfAllDone(): Unit = TerminationControl.synchronized {
 		if (started && !end && callbackSetUp && numberOfAgents <= 0) {
 			endCallBack()
 			end = true

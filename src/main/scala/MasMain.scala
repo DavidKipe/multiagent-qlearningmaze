@@ -17,6 +17,9 @@ object MasMain {
 	val n = 1000
 
 
+	private var tStart: Long = _
+	private var tEnd: Long = _
+
 	def main(args: Array[String]): Unit = {
 		val qFunction = new QFunction(lRate, dFactor)
 		val maze4x4 = Simple4x4.construct(MazeGridBuilder.WEAK_REWARD)
@@ -25,13 +28,10 @@ object MasMain {
 		val pieces = InitializationMASystem.splitEnvironment(maze4x4,2,2)
 		val mas = new LearningMazeMAS(pieces, qFunction, epsilon, n)
 
-		var t0 = System.nanoTime() // start time
-		//mas.startSimulationWithThreads()
-		TerminationControl.getInstance.setEndCallBack(_ => result(mas))
+		tStart = System.nanoTime() // start time
+		//mas.startSimulationWithThreads(); result(mas)
+		TerminationControl.setEndCallBack(_ => result(mas))
 		mas.startSimulation()
-
-	    var t1 = System.nanoTime() // end time
-	    println("Time for MAS: " + (t1 - t0)/1e06 + " ms")
 
 		// compare with single agent
 		/*val agent = new SingleAgent(maze4x4, qFunction)
@@ -51,6 +51,8 @@ object MasMain {
 	}
 
 	private def result(mas: LearningMazeMAS): Unit = {
+		tEnd = System.nanoTime()
+		println("SIMULATION ENDED in: " + (tEnd - tStart)/1e06 + " ms")
 		val bestPath = mas.generateTheBestPath()
 		Simple4x4.showMaze()
 		println("MAS bestpath: " + bestPath)

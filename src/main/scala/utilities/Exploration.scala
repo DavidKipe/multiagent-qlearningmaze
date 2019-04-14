@@ -18,7 +18,7 @@ object Exploration {
 		do {
 			val selected_a: Action = policy.nextAction(currState, qMatrix) // get the next action (according to the policy given)
 
-			val q = qFunction.value(qMatrix, currState, selected_a) // get the new q-value
+			val q = qFunction.value(qMatrix, currState, selected_a.act) // get the new q-value
 
 			qMatrix.put(currState, selected_a, q) // update the q-matrix (most important part, here the "memory" of the agent is learning)
 
