@@ -1,6 +1,6 @@
 import agent.BaseAgent
 import environment.maze.MazeGridBuilder
-import examples.maze.MASMaze8x8
+import examples.maze.{MASMaze8x8, RandomMaze}
 import learning.{QFunction, QMatrix}
 import policy.EpsilonGreedy
 
@@ -29,16 +29,16 @@ object Main {
 			n = scala.io.StdIn.readInt()
 		}*/
 
-		val n = 8000
-		val rewardType = MazeGridBuilder.WEAK_REWARD
+		val n = 200
+		val rewardType = MazeGridBuilder.MEDIUM_REWARD
 
 		val mazeDir = MASMaze8x8
 
-		val maze = mazeDir.construct(rewardType) // create the example maze
+		val maze = new RandomMaze(10, 15, .1, .05).construct() //mazeDir.construct(rewardType) // create the example maze
 
 		// initialize q-function and the exploration policy
 		val qFunction = new QFunction(lRate, dFactor)
-		val epsilonGreedy = new EpsilonGreedy(epsilon)
+		val epsilonGreedy = new EpsilonGreedy(0.5, 0.2, n*10)
 		val qMatrix = new QMatrix
 
 		val mouseAgent = new BaseAgent(qMatrix, maze, qFunction, epsilonGreedy, n) // init the agent
@@ -51,7 +51,10 @@ object Main {
 		//val mouseAgentCtrl = container.acceptNewAgent("mouse", mouseAgent)
 		//mouseAgentCtrl.start()
 
-		mouseAgent.runEpisodes(epsilonGreedy, n)
+		val tStart = System.nanoTime()
+		mouseAgent.runEpisodes()
+		val tEnd = System.nanoTime()
+		println("SIMULATION ENDED in: " + (tEnd - tStart)/1e06 + " ms")
 
 		//mazeDir.showMaze()
 

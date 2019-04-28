@@ -32,7 +32,7 @@ class BaseAgent(protected val qMatrix: QMatrix, protected val maze: Environment,
 
 	override def runEpisode(epsilonGreedyPolicy: EpsilonGreedy = this.eGreedyPolicy): Unit = runOneEpisode(epsilonGreedyPolicy)
 
-	override def runEpisodes(epsilonGreedyPolicy: EpsilonGreedy = this.eGreedyPolicy, numberOfEpisodes: Int): Unit = for (_ <- 0 until numberOfEpisodes) runOneEpisode(epsilonGreedyPolicy)
+	override def runEpisodes(epsilonGreedyPolicy: EpsilonGreedy = this.eGreedyPolicy, numberOfEpisodes: Int = this.numberOfEpisodes): Unit = for (_ <- 0 until numberOfEpisodes) runOneEpisode(epsilonGreedyPolicy)
 
 	protected def runOneEpisode(eGreedyPlcy: EpsilonGreedy, isLaunchedFromBehaviour: Boolean = false): Unit = Exploration.episode(qMatrix, qFunction, maze, eGreedyPlcy)
 

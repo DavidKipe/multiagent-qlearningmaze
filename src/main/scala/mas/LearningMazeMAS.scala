@@ -10,17 +10,19 @@ import policy.EpsilonGreedyBounds
 
 import scala.collection.mutable
 
-class LearningMazeMAS(val environmentPieces: Array[Array[EnvironmentPiece]], val qFunction: QFunction, val epsilonGreedyValue: Double, val numberOfEpisodesToRun: Int) {
+class LearningMazeMAS(val environmentPieces: Array[Array[EnvironmentPiece]], val qFunction: QFunction, val startEpsilonValue: Double, val finalEpsilonValue: Double, val numberOfEpisodesToRun: Int) {
 
 	val gridVertHeight: Int = environmentPieces.length
 	val gridHorizWidth: Int = if (gridVertHeight == 0) 0 else environmentPieces.head.length
 
 	private val gridOfAgents: Array[Array[MASAgent]] = Array.ofDim(gridVertHeight, gridHorizWidth)
 
+	private val nForEpsGreedy = numberOfEpisodesToRun * Math.max(environmentPieces.head.head.gridSize._1, environmentPieces.head.head.gridSize._2)
+
 	/* Constructor */
 	forAllGridPositions((posY: Int, posX: Int) =>
 		gridOfAgents(posY)(posX) = new MASAgent(new QMatrix, environmentPieces(posY)(posX), qFunction, Map.empty[(Int, Int), MASAgent],
-			new EpsilonGreedyBounds(epsilonGreedyValue, environmentPieces(posY)(posX).getAngleStatesAbsCoords), numberOfEpisodesToRun)
+			new EpsilonGreedyBounds(startEpsilonValue, finalEpsilonValue, nForEpsGreedy, environmentPieces(posY)(posX).getAngleStatesAbsCoords), numberOfEpisodesToRun)
 	) // create and initialize all the agents on the grid
 
 	forAllGridPositions((posY: Int, posX: Int) => { // set all the neighbors for each agent
@@ -60,7 +62,7 @@ class LearningMazeMAS(val environmentPieces: Array[Array[EnvironmentPiece]], val
 		forAllGridPositions((posY: Int, posX: Int) =>
 			gridOfThreads(posY)(posX) = new Thread(
 				new RunnableAgent(gridOfAgents(posY)(posX),
-				new EpsilonGreedyBounds(epsilonGreedyValue, gridOfAgents(posY)(posX).getAngleStatesAbsCoords),
+				new EpsilonGreedyBounds(startEpsilonValue, finalEpsilonValue, nForEpsGreedy, gridOfAgents(posY)(posX).getAngleStatesAbsCoords),
 				numberOfEpisodesToRun)
 			)
 		)

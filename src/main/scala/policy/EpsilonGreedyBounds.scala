@@ -5,13 +5,14 @@ import environment.state.State
 import exception.NoActionFound
 import learning.QMatrix
 
-class EpsilonGreedyBounds(epsilon: Double, val anglesBoundaries: ((Int, Int), (Int, Int))) extends EpsilonGreedy(epsilon) {
+class EpsilonGreedyBounds(startEpsilon: Double, finalEpsilon: Double, numberOfActionToReachFinal: Int, val anglesBoundaries: ((Int, Int), (Int, Int)))
+	extends EpsilonGreedy(startEpsilon, finalEpsilon, numberOfActionToReachFinal) {
 
 	override def nextAction(state: State, qMatrix: QMatrix): Action = {
 		var bestActions: Seq[Action] = Seq.empty
 		_isLastActionRandom = false
 
-		if (random.nextDouble < epsilon) { // if the random value is less than epsilon value
+		if (random.nextDouble < calcNewEpsilon()) { // if the random value is less than epsilon value
 			bestActions = state.getActions(anglesBoundaries) // all the actions are possible
 			_isLastActionRandom = true
 		}

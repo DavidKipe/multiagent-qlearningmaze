@@ -6,13 +6,20 @@ import learning.QMatrix
 
 import scala.util.Random
 
-class EpsilonGreedy(val epsilon: Double) extends ExplorationPolicy {
+class EpsilonGreedy(val startEpsilon: Double, val finalEpsilon: Double, val numberOfActionToReachFinal: Int) extends ExplorationPolicy {
 
-	require(epsilon > 0.0 && epsilon < 1.0, "Epsilon value must be in interval (0.0, 1.0)")
+	require(startEpsilon > 0.0 && startEpsilon < 1.0, "Start epsilon value must be in interval (0.0, 1.0)")
+	require(finalEpsilon > 0.0 && finalEpsilon < 1.0, "Final epsilon value must be in interval (0.0, 1.0)")
+	require(finalEpsilon < startEpsilon, "The final epsilon value must be less than start epsilon value")
 
-	protected val random = new Random
+	protected var epsilon: Double = startEpsilon
+	protected val epsilonStep: Double = (startEpsilon - finalEpsilon) / numberOfActionToReachFinal
+
+	protected var actionCount: Int = 0
 
 	protected var _isLastActionRandom: Boolean = _ // only for printing help
+
+	protected val random = new Random
 
 	def isLastActionRandom: Boolean = _isLastActionRandom
 
@@ -20,7 +27,7 @@ class EpsilonGreedy(val epsilon: Double) extends ExplorationPolicy {
 		var bestActions: Seq[Action] = Seq.empty
 		_isLastActionRandom = false
 
-		if (random.nextDouble < epsilon) { // if the random value is less than epsilon value
+		if (random.nextDouble < calcNewEpsilon()) { // if the random value is less than epsilon value
 			bestActions = state.getActions // all the actions are possible
 			_isLastActionRandom = true
 		}
@@ -39,6 +46,16 @@ class EpsilonGreedy(val epsilon: Double) extends ExplorationPolicy {
 			print("*   ")
 		else
 			print("    ")
+	}
+
+	protected def calcNewEpsilon(): Double = {
+		if (actionCount < numberOfActionToReachFinal) {
+			epsilon -= epsilonStep
+			actionCount += 1
+			epsilon
+		}
+		else
+			epsilon
 	}
 
 }

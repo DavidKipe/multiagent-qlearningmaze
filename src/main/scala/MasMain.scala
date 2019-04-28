@@ -1,6 +1,4 @@
-import agent.TerminationControl
-import environment.maze.MazeGridBuilder
-import examples.maze.MASMaze8x8
+import examples.maze.RandomMaze
 import learning.QFunction
 import mas.{InitializationMASystem, LearningMazeMAS}
 
@@ -14,7 +12,7 @@ object MasMain {
 
 	val epsilon = .4    // the percentage of random actions taken for the e-greedy exploration policy
 
-	val n = 2000
+	val n = 100
 
 
 	private var tStart: Long = _
@@ -24,31 +22,17 @@ object MasMain {
 		val qFunction = new QFunction(lRate, dFactor)
 
 		//val maze4x4 = Simple4x4.construct(MazeGridBuilder.WEAK_REWARD)
-		val maze8x8 = MASMaze8x8.construct(MazeGridBuilder.WEAK_REWARD)
+		val maze8x8 = new RandomMaze(10, 15, .1, .05).construct()//MASMaze8x8.construct(MazeGridBuilder.MEDIUM_REWARD)
 
 		//println(maze4x4)
 		//val pieces = InitializationMASystem.splitEnvironment(maze4x4,2,2)
-		val pieces = InitializationMASystem.splitEnvironment(maze8x8, 2, 2)
-		val mas = new LearningMazeMAS(pieces, qFunction, epsilon, n)
+		val pieces = InitializationMASystem.splitEnvironment(maze8x8, 3, 2)
+		val mas = new LearningMazeMAS(pieces, qFunction, 0.5, 0.2, n)
 
 		tStart = System.nanoTime() // start time
-		//mas.startSimulationWithThreads(); result(mas)
-		TerminationControl.setEndCallBack(_ => result(mas))
-		mas.startSimulation()
-
-		// compare with single agent
-		/*val agent = new SingleAgent(maze4x4, qFunction)
-		val epsilonGreedy = new EpsilonGreedy(epsilon)
-
-		t0 = System.nanoTime() // start time
-		agent.runEpisodes(epsilonGreedy, n)
-		val bestPathSA = agent.getBestPathFromStartingState
-		t1 = System.nanoTime() // end time
-		println("Time for SA: " + (t1 - t0)/1e06 + " ms")*/
-
-		//Simple4x4.showMaze()
-		//println("MAS bestpath: " + bestPath)
-		//println("SA  bestpath: " + bestPathSA)
+		mas.startSimulationWithThreads(); result(mas)
+		//TerminationControl.setEndCallBack(_ => result(mas))
+		//mas.startSimulation()
 
 		val dummy = 0 // breakpoint
 	}
