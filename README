@@ -3,16 +3,18 @@ Davide Paparella - Università degli studi di Genova
 Project for Multi-Agent Systems course 2018/2019
 
 
-This project is written in Scala language ans uses Jade library [http://jade.tilab.com/]
+This project is written in Scala language and uses also [Jade](http://jade.tilab.com/) library for the multi-agent part.
 
-To write and execute this code I used the IntelliJ IDEA IDE [https://www.jetbrains.com/idea/].
+To write and execute this code I used the [IntelliJ IDEA IDE](https://www.jetbrains.com/idea/).
 Thus I suggest to use IntelliJ IDEA to run this project, the community edition will be enough.
 
 To allow IntelliJ IDEA to recognize Scala source code, a plug-in must be installed.
 Here is the official guide of JetBrains for using IntelliJ with Scala:
-https://www.jetbrains.com/help/idea/discover-intellij-idea-for-scala.html
+[https://www.jetbrains.com/help/idea/discover-intellij-idea-for-scala.html]
 
 This project is an extension (or fork) of a previously project develped for Machine Learning course.
+The base project is on GitHub [https://github.com/DavidKipe/qlearning-maze]
+
 Below the older README:
 
 The project simulates a labyrinth in which a mouse (our agent) will learn how to reach the goal (the cheese) traveling the best route. Inside the maze there are also intermediate rewards, positive and negative.
@@ -29,9 +31,9 @@ We can observe that if we choose strong rewards the agent tends to choose the pa
 
 Inside the repository there is the "resources" folder, which helps to understand the maze used for the test.
 
---------------------------------------------------
+---
 
 Multi-Agent extension
 
-To create a multi-agent system I used Jade library.
 The environment is now split logically among various agents. The agents will communicate each other to find the best solution.
+There are also some changes and improvements in the algorithm.
