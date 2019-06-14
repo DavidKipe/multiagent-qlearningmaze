@@ -1,6 +1,6 @@
 import agent.BaseAgent
 import environment.maze.MazeGridBuilder
-import examples.maze.{MASMaze8x8, RandomMaze}
+import examples.maze.MASMaze8x8
 import learning.{QFunction, QMatrix}
 import policy.EpsilonGreedy
 
@@ -16,25 +16,31 @@ object Main {
 
 
 	def main(args: Array[String]): Unit = {
-		/*var c: Char = '?'
-		while (c != 'w' && c != 's') { // input request for reward bonus
-			print("Choose the intermediate reward bonus value [w = weak, s = strong]: ")
-			c = scala.io.StdIn.readChar()
+		var x: Int = 0
+		while (x < 1 || x > 4) { // input request for reward bonus
+			print("Choose the intermediate reward bonus value [1 = very weak, 2 = weak, 3 = medium, 4 = strong]: ")
+			x = scala.io.StdIn.readInt()
 		}
-		val rewardType = if (c == 'w') MazeGridBuilder.WEAK_REWARD else MazeGridBuilder.STRONG_REWARD
+
+		val rewardType = x match {
+			case 1 => MazeGridBuilder.VERY_WEAK_REWARD
+			case 2 => MazeGridBuilder.WEAK_REWARD
+			case 3 => MazeGridBuilder.MEDIUM_REWARD
+			case 4 => MazeGridBuilder.STRONG_REWARD
+		}
 
 		var n: Int = 0
 		while (n < 2) { // input request for the number of episodes
 			print("Choose the number of episodes that will be performed: ")
 			n = scala.io.StdIn.readInt()
-		}*/
-
-		val n = 200
-		val rewardType = MazeGridBuilder.MEDIUM_REWARD
+		}
 
 		val mazeDir = MASMaze8x8
+		val maze = mazeDir.construct(rewardType) // create the example maze
 
-		val maze = new RandomMaze(10, 15, .1, .05).construct() //mazeDir.construct(rewardType) // create the example maze
+		//val n = 200
+		//val rewardType = MazeGridBuilder.MEDIUM_REWARD
+		//val maze = new RandomMaze(10, 15, .1, .05).construct()
 
 		// initialize q-function and the exploration policy
 		val qFunction = new QFunction(lRate, dFactor)
@@ -43,22 +49,12 @@ object Main {
 
 		val mouseAgent = new BaseAgent(qMatrix, maze, qFunction, epsilonGreedy, n) // init the agent
 
-		// init the Jade container
-		//val runtime = jade.core.Runtime.instance
-		//val container = runtime.createMainContainer(new ProfileImpl)
-
-		// create and start simulation
-		//val mouseAgentCtrl = container.acceptNewAgent("mouse", mouseAgent)
-		//mouseAgentCtrl.start()
-
 		val tStart = System.nanoTime()
 		mouseAgent.runEpisodes()
 		val tEnd = System.nanoTime()
 		println("SIMULATION ENDED in: " + (tEnd - tStart)/1e06 + " ms")
 
 		//mazeDir.showMaze()
-
-		//Analyze.printBestPath(mouseAgent.qMatrix, maze)
 
 		val bestPath = mouseAgent.getBestPathFromStartingState
 		print("Best Path: "); println(bestPath)

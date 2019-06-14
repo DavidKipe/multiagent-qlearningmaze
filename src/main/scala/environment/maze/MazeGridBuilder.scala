@@ -106,7 +106,7 @@ object MazeGridBuilder {
 
 	val GOAL_REWARD: Int = 100
 
-	val VERY_WEAK_REWARD: Int = 2
+	val VERY_WEAK_REWARD: Int = 3
 	val WEAK_REWARD: Int =      8
 	val MEDIUM_REWARD: Int =    15
 	val STRONG_REWARD: Int =    30

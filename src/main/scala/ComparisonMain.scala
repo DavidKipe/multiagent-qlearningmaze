@@ -25,7 +25,7 @@ object ComparisonMain {
 
 	val nEpST = 180 // number of episodes for single thread execution
 
-	val nEpMT: Int = (nEpST / Math.sqrt(horizPieces*vertPieces)).toInt
+	val nEpMT: Int = (nEpST / Math.sqrt(horizPieces*vertPieces)).toInt // number of episodes for multi thread execution: number_of_MT_episodes = number_of_ST_episodes / sqrt(number_of_pieces)
 	/*  */
 
 	private var tStart: Long = _
@@ -35,7 +35,6 @@ object ComparisonMain {
 		val qFunction = new QFunction(lRate, dFactor)
 
 		val randomMaze = new RandomMaze(height, width, .1, .05).construct()
-
 
 		// SingleThread - SingleAgent
 		val epsilonGreedy = new EpsilonGreedy(startEpsilon, finalEpsilon, nEpST * Math.max(height, width))
@@ -71,7 +70,5 @@ object ComparisonMain {
 		val bestPath = mas.generateTheBestPath()
 		println("MAS bestpath: " + bestPath)
 	}
-
-	// number_of_MT_episodes = number_of_ST_episodes / sqrt(number_of_pieces)
 
 }

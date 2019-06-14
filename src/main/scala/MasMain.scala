@@ -1,4 +1,5 @@
-import examples.maze.RandomMaze
+import environment.maze.MazeGridBuilder
+import examples.maze.MASMaze8x8
 import learning.QFunction
 import mas.{InitializationMASystem, LearningMazeMAS}
 
@@ -12,7 +13,7 @@ object MasMain {
 
 	val epsilon = .4    // the percentage of random actions taken for the e-greedy exploration policy
 
-	val n = 100
+	val n = 250
 
 
 	private var tStart: Long = _
@@ -22,19 +23,17 @@ object MasMain {
 		val qFunction = new QFunction(lRate, dFactor)
 
 		//val maze4x4 = Simple4x4.construct(MazeGridBuilder.WEAK_REWARD)
-		val maze8x8 = new RandomMaze(10, 15, .1, .05).construct()//MASMaze8x8.construct(MazeGridBuilder.MEDIUM_REWARD)
+		val maze8x8 = MASMaze8x8.construct(MazeGridBuilder.MEDIUM_REWARD)
 
 		//println(maze4x4)
 		//val pieces = InitializationMASystem.splitEnvironment(maze4x4,2,2)
-		val pieces = InitializationMASystem.splitEnvironment(maze8x8, 3, 2)
+		val pieces = InitializationMASystem.splitEnvironment(maze8x8, 2, 2)
 		val mas = new LearningMazeMAS(pieces, qFunction, 0.5, 0.2, n)
 
 		tStart = System.nanoTime() // start time
 		mas.startSimulationWithThreads(); result(mas)
 		//TerminationControl.setEndCallBack(_ => result(mas))
 		//mas.startSimulation()
-
-		val dummy = 0 // breakpoint
 	}
 
 	private def result(mas: LearningMazeMAS): Unit = {
