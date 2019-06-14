@@ -1,7 +1,7 @@
-Davide Paparella - Università degli studi di Genova
+Davide Paparella - Università di Genova
+=======================================
 
-Project for Multi-Agent Systems course 2018/2019
-
+## Project for Multi-Agent Systems course 2018/2019
 
 This project is written in Scala language and uses also [Jade](http://jade.tilab.com/) library for the multi-agent part.
 
@@ -14,6 +14,8 @@ Here is the official guide of JetBrains for using IntelliJ with Scala:
 
 This project is an extension (or fork) of a previously project develped for Machine Learning course.
 The base project is on GitHub [https://github.com/DavidKipe/qlearning-maze]
+
+---
 
 Below the older README:
 
@@ -33,7 +35,7 @@ Inside the repository there is the "resources" folder, which helps to understand
 
 ---
 
-Multi-Agent extension
+## Multi-Agent extension
 
 The environment is now split logically among various agents. The agents will communicate each other to find the best solution.
 There are also some changes and improvements in the algorithm.
